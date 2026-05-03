@@ -131,13 +131,16 @@ h1, h2, h3 {
 
 /* Hero Section */
 .hero {
-    height: 100vh;
+    min-height: 100vh;
     background: url('rugby_hero_bg.png') no-repeat center center/cover;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     position: relative;
+    padding-top: 100px; /* 為導航欄留出固定頂部空間 */
+    padding-bottom: 50px;
 }
 
 .hero-overlay {
@@ -153,15 +156,16 @@ h1, h2, h3 {
     position: relative;
     color: var(--text-light);
     max-width: 800px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 120px; /* 為固定導航欄留出空間 */
+    z-index: 10;
 }
 
 .hero-mascot {
-    width: 180px; /* 稍微縮小公仔尺寸 */
-    margin-bottom: 20px;
+    width: 180px;
+    margin-bottom: 30px;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
     animation: float 3s ease-in-out infinite;
 }
@@ -608,12 +612,14 @@ footer {
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-    .hero h1 { font-size: 2.5rem; }
+    .hero h1 { font-size: 2.2rem; }
+    .hero h2 { font-size: 1.1rem; letter-spacing: 3px; }
+    .hero-mascot { width: 140px; margin-top: 20px; }
     .nav-links { display: none; }
     .timeline-wrapper { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: 1fr; }
     .form-grid { grid-template-columns: 1fr; }
-    .hero-btns { display: flex; flex-direction: column; gap: 15px; }
+    .hero-btns { display: flex; flex-direction: column; gap: 15px; width: 100%; padding: 0 20px; }
     .btn-outline { margin-left: 0; }
 }
 
