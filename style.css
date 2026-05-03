@@ -70,12 +70,12 @@ h1, h2, h3 {
     top: 0;
     width: 100%;
     z-index: 1000;
-    padding: 12px 0; /* 調薄導航欄 */
-    background: rgba(0, 31, 63, 0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 2px solid var(--gold); /* 增加金色底線增加層次 */
+    padding: 10px 0;
+    background: rgba(0, 31, 63, 0.88);
+    backdrop-filter: blur(15px);
+    border-bottom: 2px solid var(--gold);
     transition: var(--transition);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
 .glass-nav .container {
@@ -87,52 +87,64 @@ h1, h2, h3 {
 .logo {
     display: flex;
     align-items: center;
-    justify-content: center;
-    background-color: white;
-    border-radius: 6px;
-    padding: 4px 10px;
-    height: 42px; /* 稍微縮小 Logo 高度配合薄版導航 */
-    width: auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    gap: 12px;
+    text-decoration: none;
     transition: var(--transition);
-    border: 1px solid var(--gold);
 }
 
 .logo::before {
     content: '';
     display: block;
-    width: 70px;
+    width: 60px;
     height: 35px;
-    background: url('team_logo.png') no-repeat center;
+    background: white url('team_logo.png') no-repeat center;
     background-size: contain;
+    border-radius: 4px;
+    padding: 4px;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
 }
 
-.logo:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+.logo-text {
+    font-weight: 700;
+    color: white;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    font-family: 'Playfair Display', serif;
+}
+
+.logo:hover .logo-text {
+    color: var(--gold);
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
 }
 
 .nav-links {
     display: flex;
     list-style: none;
+    align-items: center;
 }
 
 .nav-links a {
-    color: var(--text-light);
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
-    margin-left: 30px;
+    margin-left: 25px;
     font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     transition: var(--transition);
     position: relative;
 }
 
-.nav-links a::after {
+.nav-links a:not(.nav-btn)::after {
     content: '';
     position: absolute;
-    bottom: -5px;
+    bottom: -4px;
     left: 0;
     width: 0;
     height: 2px;
@@ -141,11 +153,40 @@ h1, h2, h3 {
 }
 
 .nav-links a:hover {
-    color: var(--gold);
+    color: white;
 }
 
 .nav-links a:hover::after {
     width: 100%;
+}
+
+.nav-btn {
+    background: var(--gold);
+    color: var(--navy-blue) !important;
+    padding: 8px 18px;
+    border-radius: 4px;
+    margin-left: 25px;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+}
+
+.nav-btn:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(212, 175, 55, 0.5);
+}
+
+.anniversary-tag {
+    background: linear-gradient(135deg, #FFD700, var(--gold));
+    color: var(--navy-blue);
+    font-weight: 900;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transform: rotate(5deg);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    border: 1px solid white;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.5);
 }
 
 /* Hero Section */
