@@ -164,8 +164,8 @@ h1, h2, h3 {
 }
 
 .hero-mascot {
-    width: 160px; /* 縮小公仔 */
-    margin-bottom: 10px; /* 縮減間距 */
+    width: 200px; /* 放大公仔 */
+    margin-bottom: -5px; /* 取消間距，使其接近第一排字 */
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
     animation: float 3s ease-in-out infinite;
 }
@@ -618,7 +618,7 @@ footer {
     .hero { padding-top: 70px; }
     .hero h1 { font-size: 2.1rem; }
     .hero h2 { font-size: 1rem; letter-spacing: 2px; margin-bottom: 5px; }
-    .hero-mascot { width: 120px; margin-bottom: 5px; }
+    .hero-mascot { width: 160px; margin-bottom: 0; }
     .hero p { font-size: 0.95rem; margin-bottom: 20px; }
     .nav-links { display: none; }
     .timeline-wrapper { grid-template-columns: 1fr; }
