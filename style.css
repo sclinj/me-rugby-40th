@@ -139,7 +139,7 @@ h1, h2, h3 {
     justify-content: center;
     text-align: center;
     position: relative;
-    padding-top: 80px; /* 調緊頂部空間 */
+    padding-top: 120px; /* 進一步調低頂部空間 */
     padding-bottom: 30px;
 }
 
