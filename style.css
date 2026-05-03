@@ -160,6 +160,7 @@ h1, h2, h3 {
 
 .hero-mascot {
     width: 200px;
+    margin-top: 60px; /* 增加上方間距，避免被導航欄遮住 */
     margin-bottom: 20px;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
     animation: float 3s ease-in-out infinite;
