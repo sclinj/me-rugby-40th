@@ -70,10 +70,12 @@ h1, h2, h3 {
     top: 0;
     width: 100%;
     z-index: 1000;
-    padding: 20px 0;
-    background: rgba(0, 31, 63, 0.8);
-    backdrop-filter: blur(10px);
+    padding: 12px 0; /* 調薄導航欄 */
+    background: rgba(0, 31, 63, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--gold); /* 增加金色底線增加層次 */
     transition: var(--transition);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
 .glass-nav .container {
@@ -87,11 +89,11 @@ h1, h2, h3 {
     align-items: center;
     justify-content: center;
     background-color: white;
-    border-radius: 8px; /* 稍微圓角但不完全圓形，維持簡潔 */
-    padding: 5px 12px;
-    height: 50px;
+    border-radius: 6px;
+    padding: 4px 10px;
+    height: 42px; /* 稍微縮小 Logo 高度配合薄版導航 */
     width: auto;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     transition: var(--transition);
     border: 1px solid var(--gold);
 }
@@ -99,15 +101,15 @@ h1, h2, h3 {
 .logo::before {
     content: '';
     display: block;
-    width: 80px; /* 根據隊徽比例 */
-    height: 40px;
+    width: 70px;
+    height: 35px;
     background: url('team_logo.png') no-repeat center;
     background-size: contain;
 }
 
 .logo:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
 .nav-links {
@@ -119,14 +121,31 @@ h1, h2, h3 {
     color: var(--text-light);
     text-decoration: none;
     margin-left: 30px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    transition: var(--transition);
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gold);
     transition: var(--transition);
 }
 
 .nav-links a:hover {
     color: var(--gold);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
 }
 
 /* Hero Section */
