@@ -139,8 +139,8 @@ h1, h2, h3 {
     justify-content: center;
     text-align: center;
     position: relative;
-    padding-top: 100px; /* 為導航欄留出固定頂部空間 */
-    padding-bottom: 50px;
+    padding-top: 80px; /* 調緊頂部空間 */
+    padding-bottom: 30px;
 }
 
 .hero-overlay {
@@ -164,8 +164,8 @@ h1, h2, h3 {
 }
 
 .hero-mascot {
-    width: 180px;
-    margin-bottom: 30px;
+    width: 160px; /* 縮小公仔 */
+    margin-bottom: 10px; /* 縮減間距 */
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
     animation: float 3s ease-in-out infinite;
 }
@@ -182,16 +182,16 @@ h1, h2, h3 {
 }
 
 .hero h2 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 300;
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* 縮減間距 */
     letter-spacing: 5px;
 }
 
 .hero h1 {
-    font-size: 4rem;
-    line-height: 1.2;
-    margin-bottom: 30px;
+    font-size: 3.5rem; /* 縮小字體 */
+    line-height: 1.1;
+    margin-bottom: 15px; /* 縮減間距 */
 }
 
 .accent-gold {
@@ -200,9 +200,12 @@ h1, h2, h3 {
 }
 
 .hero p {
-    font-size: 1.2rem;
-    margin-bottom: 40px;
+    font-size: 1.1rem;
+    margin-bottom: 25px; /* 縮減間距 */
     opacity: 0.9;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .hero-btns {
@@ -612,9 +615,11 @@ footer {
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-    .hero h1 { font-size: 2.2rem; }
-    .hero h2 { font-size: 1.1rem; letter-spacing: 3px; }
-    .hero-mascot { width: 140px; margin-top: 20px; }
+    .hero { padding-top: 70px; }
+    .hero h1 { font-size: 2.1rem; }
+    .hero h2 { font-size: 1rem; letter-spacing: 2px; margin-bottom: 5px; }
+    .hero-mascot { width: 120px; margin-bottom: 5px; }
+    .hero p { font-size: 0.95rem; margin-bottom: 20px; }
     .nav-links { display: none; }
     .timeline-wrapper { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: 1fr; }
