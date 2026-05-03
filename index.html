@@ -27,6 +27,7 @@
                     <li><a href="#event">活動推廣</a></li>
                     <li><a href="#history">歷史回顧</a></li>
                     <li><a href="#registration">OB 報名</a></li>
+                    <li><a href="#attendees">出席芳名錄</a></li>
                     <li><a href="#fund" class="nav-btn">籌備現況</a></li>
                 </ul>
                 <div class="anniversary-tag">40<sup>th</sup></div>
@@ -175,6 +176,36 @@
 
                     <button type="submit" class="btn btn-primary btn-block">提交報名資料</button>
                 </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Attendees List Section -->
+    <section id="attendees" class="section dark-bg">
+        <div class="container">
+            <h2 class="section-title">出席芳名錄</h2>
+            <p class="section-subtitle text-center">看看有哪些老隊友已經報名了！</p>
+            
+            <div class="filter-controls">
+                <div class="search-input-group">
+                    <input type="text" id="searchName" placeholder="搜尋姓名...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="filter-select-group">
+                    <select id="filterGradYear">
+                        <option value="">所有級數</option>
+                        <!-- 將由 JavaScript 動態生成 -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="attendee-grid-container">
+                <div id="attendeeGrid" class="attendee-grid">
+                    <div class="loading-spinner">載入名單中...</div>
+                </div>
+                <div id="noResults" class="no-results hidden">
+                    找不到符合條件的隊友，快邀請他們來報名吧！
+                </div>
             </div>
         </div>
     </section>

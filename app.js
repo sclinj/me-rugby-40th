@@ -25,9 +25,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const leadingBatchEl = document.getElementById('leading-batch');
     const batchBarsEl = document.getElementById('batch-bars');
 
+    // 出席名單相關元素
+    const filterGradYear = document.getElementById('filterGradYear');
+    const searchName = document.getElementById('searchName');
+    const attendeeGrid = document.getElementById('attendeeGrid');
+    const noResults = document.getElementById('noResults');
+    let allAttendees = []; // 儲存所有報名名單
+
+    // 初始化級數篩選選單
+    if (filterGradYear) {
+        for (let i = 115; i >= 75; i--) {
+            const option = document.createElement('option');
+            option.value = i + '級';
+            option.textContent = i + '級';
+            filterGradYear.appendChild(option);
+        }
+    }
+
     async function fetchStats() {
         try {
-            // 加上時間戳記防止瀏覽器快取舊數據
             const cacheBuster = `?t=${new Date().getTime()}`;
             const response = await fetch(GAS_URL + cacheBuster);
             
@@ -37,15 +53,62 @@ document.addEventListener('DOMContentLoaded', () => {
             
             currentCount = data.total || 0;
             batchData = data.batchData || [];
+            allAttendees = data.attendees || []; // 假設 GAS 會回傳 attendees 陣列
             
+            // 如果 GAS 尚未回傳名單，為了展示功能，可以使用模擬數據 (正式環境建議移除)
+            if (allAttendees.length === 0 && currentCount > 0) {
+                console.warn('GAS 未回傳詳細名單，暫時使用模擬數據進行展示');
+                // 這裡可以選擇不顯示或顯示提示
+            }
+
             updateUI();
+            renderAttendees();
         } catch (error) {
             console.error('無法讀取統計數據:', error);
-            // 顯示基本備用訊息
             if (heroCountEl) heroCountEl.innerText = '--';
             if (regCountEl) regCountEl.innerText = '--';
+            if (attendeeGrid) attendeeGrid.innerHTML = '<div class="error-msg">暫時無法讀取名單</div>';
         }
     }
+
+    function renderAttendees() {
+        if (!attendeeGrid) return;
+
+        const searchText = searchName.value.trim().toLowerCase();
+        const selectedBatch = filterGradYear.value;
+
+        // 過濾名單
+        const filtered = allAttendees.filter(person => {
+            const matchesSearch = person.name.toLowerCase().includes(searchText);
+            const matchesBatch = !selectedBatch || person.gradYear === selectedBatch;
+            return matchesSearch && matchesBatch;
+        });
+
+        // 排序：依級數從新到舊，同級數依姓名
+        filtered.sort((a, b) => {
+            const batchA = parseInt(a.gradYear) || 0;
+            const batchB = parseInt(b.gradYear) || 0;
+            if (batchB !== batchA) return batchB - batchA;
+            return a.name.localeCompare(b.name, 'zh-Hant');
+        });
+
+        if (filtered.length > 0) {
+            noResults.classList.add('hidden');
+            attendeeGrid.innerHTML = filtered.map((person, index) => `
+                <div class="attendee-card" style="animation-delay: ${Math.min(index * 0.05, 1)}s">
+                    <div class="attendee-name">${person.name}</div>
+                    <div class="attendee-batch">${person.gradYear}</div>
+                </div>
+            `).join('');
+        } else {
+            attendeeGrid.innerHTML = '';
+            noResults.classList.remove('hidden');
+        }
+    }
+
+    // 綁定搜尋與篩選事件
+    if (searchName) searchName.addEventListener('input', renderAttendees);
+    if (filterGradYear) filterGradYear.addEventListener('change', renderAttendees);
 
     function updateUI() {
         // 更新主計數器
