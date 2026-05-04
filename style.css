@@ -744,11 +744,28 @@ h1, h2, h3 {
     opacity: 0.9;
 }
 
-.loading-spinner, .no-results {
+.loading-spinner, .no-results, .info-msg, .error-msg {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 40px;
+    padding: 60px 40px;
     color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.info-msg p {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.info-msg small {
+    color: var(--gold);
+    opacity: 0.8;
+}
+
+.no-results strong {
+    color: var(--gold);
 }
 
 .no-results.hidden {

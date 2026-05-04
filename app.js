@@ -77,10 +77,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchText = searchName.value.trim().toLowerCase();
         const selectedBatch = filterGradYear.value;
 
+        // 如果連名單都沒有抓到（可能 GAS 沒回傳 attendees 欄位）
+        if (allAttendees.length === 0) {
+            if (currentCount > 0) {
+                attendeeGrid.innerHTML = `
+                    <div class="info-msg">
+                        <p>📍 目前已有 ${currentCount} 位報名</p>
+                        <p><small>詳細名單同步中，請稍候或聯絡管理員更新數據源。</small></p>
+                    </div>`;
+            } else {
+                attendeeGrid.innerHTML = '<div class="info-msg">目前尚無報名資料</div>';
+            }
+            noResults.classList.add('hidden');
+            return;
+        }
+
         // 過濾名單
         const filtered = allAttendees.filter(person => {
-            const matchesSearch = person.name.toLowerCase().includes(searchText);
-            const matchesBatch = !selectedBatch || person.gradYear === selectedBatch;
+            // 如果沒輸入姓名，則 matchesSearch 視為 true
+            const matchesSearch = !searchText || (person.name && person.name.toLowerCase().includes(searchText));
+            // 如果未選擇級數，則 matchesBatch 視為 true
+            const matchesBatch = !selectedBatch || (person.gradYear === selectedBatch);
             return matchesSearch && matchesBatch;
         });
 
@@ -89,20 +106,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const batchA = parseInt(a.gradYear) || 0;
             const batchB = parseInt(b.gradYear) || 0;
             if (batchB !== batchA) return batchB - batchA;
-            return a.name.localeCompare(b.name, 'zh-Hant');
+            return (a.name || "").localeCompare(b.name || "", 'zh-Hant');
         });
 
         if (filtered.length > 0) {
             noResults.classList.add('hidden');
             attendeeGrid.innerHTML = filtered.map((person, index) => `
                 <div class="attendee-card" style="animation-delay: ${Math.min(index * 0.05, 1)}s">
-                    <div class="attendee-name">${person.name}</div>
-                    <div class="attendee-batch">${person.gradYear}</div>
+                    <div class="attendee-name">${person.name || '未知名稱'}</div>
+                    <div class="attendee-batch">${person.gradYear || '未知級數'}</div>
                 </div>
             `).join('');
         } else {
             attendeeGrid.innerHTML = '';
             noResults.classList.remove('hidden');
+            // 如果有選級數但沒結果
+            if (selectedBatch) {
+                noResults.innerHTML = `找不到符合 <strong>${selectedBatch}</strong> 的隊友，快邀請他們來報名吧！`;
+            } else {
+                noResults.innerHTML = `找不到符合條件的隊友，快邀請他們來報名吧！`;
+            }
         }
     }
 
