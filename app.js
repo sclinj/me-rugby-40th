@@ -60,7 +60,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 try {
                     const formData = new FormData(regForm);
-                    const data = Object.fromEntries(formData.entries());
+                    
+                    // 顯式構建資料物件，確保鍵值順序與內容正確
+                    const data = {
+                        name: formData.get('name'),
+                        gradYear: formData.get('gradYear'),
+                        attend: formData.get('attend') ? '是' : '否',
+                        guests: formData.get('guests') || '0',
+                        dietSelf: formData.get('dietSelf') || '葷',
+                        dietGuest: formData.get('dietGuest') || '葷'
+                    };
+
                     await fetch(GAS_URL, {
                         method: 'POST',
                         mode: 'no-cors',
