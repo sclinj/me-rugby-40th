@@ -390,6 +390,37 @@ document.addEventListener('DOMContentLoaded', () => {
         startAutoPlay();
     }
 
+    // --- 7.5 外部連結安全性提醒 ---
+    function initExternalLinks() {
+        const albumBtn = document.getElementById('btn-google-photos');
+        if (albumBtn) {
+            albumBtn.addEventListener('click', (e) => {
+                const confirmLeave = confirm('您即將前往外部相簿空間 (Google Photos)。\n此空間由 82 級培富學長提供，您可以在該處欣賞或上傳活動照片。\n\n是否繼續？');
+                if (!confirmLeave) {
+                    e.preventDefault();
+                }
+            });
+        }
+    }
+
+    // --- 7.6 捲動顯現效果 ---
+    function initReveal() {
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    }
+
     // --- 執行初始化 ---
     try {
         initGradYearSelects();
@@ -397,6 +428,8 @@ document.addEventListener('DOMContentLoaded', () => {
         initUIEffects();
         initAdminPanel();
         initPhotoGallery();
+        initExternalLinks();
+        initReveal();
         
         // 綁定出席名單即時搜尋事件
         const sn = document.getElementById('searchName');
