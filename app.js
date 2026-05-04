@@ -159,6 +159,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchText = searchName ? searchName.value.trim().toLowerCase() : '';
         const selectedBatch = filterGradYear ? filterGradYear.value : '';
 
+        // 如果沒有輸入關鍵字也沒有選擇級數，顯示提示訊息
+        if (!searchText && !selectedBatch) {
+            attendeeGrid.innerHTML = `
+                <div class="info-msg search-prompt">
+                    <div class="prompt-icon">🔍</div>
+                    <p>請輸入姓名或選擇級數進行查詢</p>
+                    <p><small>目前已有 ${currentCount} 位隊友報名</small></p>
+                </div>`;
+            if (noResults) noResults.classList.add('hidden');
+            return;
+        }
+
         if (allAttendees.length === 0) {
             if (currentCount > 0) {
                 attendeeGrid.innerHTML = `

@@ -223,6 +223,7 @@ h1, h2, h3 {
     z-index: 10;
 }
 
+
 .hero-mascot {
     width: 200px; /* 放大公仔 */
     margin-bottom: -5px; /* 取消間距，使其接近第一排字 */
@@ -800,6 +801,28 @@ h1, h2, h3 {
 .info-msg p {
     margin-bottom: 10px;
     font-size: 1.1rem;
+}
+
+.search-prompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed rgba(212, 175, 55, 0.3);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 60px 20px;
+}
+
+.prompt-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.5;
+    animation: pulseIcon 2s infinite ease-in-out;
+}
+
+@keyframes pulseIcon {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.1); opacity: 0.6; }
 }
 
 .info-msg small {
