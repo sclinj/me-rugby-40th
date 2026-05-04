@@ -1,163 +1,140 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const regForm = document.getElementById('regForm');
-    const attendBanquet = document.getElementById('attendBanquet');
-    const banquetDetails = document.getElementById('banquetDetails');
-    const guestsSelect = document.getElementById('guests');
-    const gradYearSelect = document.getElementById('gradYear');
+    // --- 核心變數與配置 ---
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbzBWXpjzWSt9I4zik7rnDCEbnSIH922PX-GYe8s64XkEdQynbHMJuFuyWaUoMEEbPbH/exec';
-
-    // 自動生成畢業級數選項 (75級 ~ 115級)
-    if (gradYearSelect) {
-        for (let i = 115; i >= 75; i--) { // 從新到舊排序
-            const option = document.createElement('option');
-            option.value = i + '級';
-            option.textContent = i + '級';
-            gradYearSelect.appendChild(option);
-        }
-    }
-    
-    // 報名人數邏輯 (從 GAS 讀取)
     let currentCount = 0;
     let batchData = [];
+    let allAttendees = [];
 
-    const heroCountEl = document.getElementById('hero-count');
-    const regCountEl = document.getElementById('reg-count');
-    const leadingBatchEl = document.getElementById('leading-batch');
-    const batchBarsEl = document.getElementById('batch-bars');
+    // --- 1. 初始化級數選單 ---
+    function initGradYearSelects() {
+        const selects = ['gradYear', 'filterGradYear'];
+        selects.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                // 清空除了第一個選項以外的內容
+                while (el.options.length > 1) el.remove(1);
+                for (let i = 115; i >= 75; i--) {
+                    const option = document.createElement('option');
+                    option.value = i + '級';
+                    option.textContent = i + '級';
+                    el.appendChild(option);
+                }
+            }
+        });
+    }
 
-    // 出席名單相關元素
-    const filterGradYear = document.getElementById('filterGradYear');
-    const searchName = document.getElementById('searchName');
-    const attendeeGrid = document.getElementById('attendeeGrid');
-    const noResults = document.getElementById('noResults');
-    let allAttendees = []; // 儲存所有報名名單
+    // --- 2. 報名表單邏輯 ---
+    function initRegistrationForm() {
+        const regForm = document.getElementById('regForm');
+        const attendBanquet = document.getElementById('attendBanquet');
+        const banquetDetails = document.getElementById('banquetDetails');
+        const guestsSelect = document.getElementById('guests');
+        const guestDietGroup = document.getElementById('guestDietGroup');
 
-    // 初始化級數篩選選單
-    if (filterGradYear) {
-        for (let i = 115; i >= 75; i--) {
-            const option = document.createElement('option');
-            option.value = i + '級';
-            option.textContent = i + '級';
-            filterGradYear.appendChild(option);
+        if (attendBanquet && banquetDetails) {
+            attendBanquet.addEventListener('change', () => {
+                banquetDetails.style.display = attendBanquet.checked ? 'block' : 'none';
+                if (attendBanquet.checked) {
+                    banquetDetails.style.opacity = '0';
+                    setTimeout(() => {
+                        banquetDetails.style.transition = 'opacity 0.5s ease';
+                        banquetDetails.style.opacity = '1';
+                    }, 10);
+                }
+            });
+        }
+
+        if (guestsSelect && guestDietGroup) {
+            guestsSelect.addEventListener('change', () => {
+                guestDietGroup.style.display = parseInt(guestsSelect.value) > 0 ? 'block' : 'none';
+            });
+        }
+
+        if (regForm) {
+            regForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitBtn = regForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerText;
+                submitBtn.innerText = '正在提交資料...';
+                submitBtn.disabled = true;
+
+                try {
+                    const formData = new FormData(regForm);
+                    const data = Object.fromEntries(formData.entries());
+                    await fetch(GAS_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: JSON.stringify(data)
+                    });
+                    submitBtn.innerText = '✅ 報名成功！';
+                    submitBtn.style.background = '#28a745';
+                    setTimeout(() => {
+                        alert('感謝您的報名！');
+                        regForm.reset();
+                        if (banquetDetails) banquetDetails.style.display = 'none';
+                        submitBtn.innerText = originalText;
+                        submitBtn.style.background = '';
+                        submitBtn.disabled = false;
+                        fetchStats();
+                    }, 1500);
+                } catch (error) {
+                    console.error('提交失敗:', error);
+                    alert('提交時出現錯誤，請稍後再試。');
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
         }
     }
 
+    // --- 3. 數據獲取與統計 UI ---
     async function fetchStats() {
         try {
             const cacheBuster = `?t=${new Date().getTime()}`;
             const response = await fetch(GAS_URL + cacheBuster);
-            
             if (!response.ok) throw new Error('網路回應不正確');
-            
             const data = await response.json();
             
             currentCount = data.total || 0;
             batchData = data.batchData || [];
-            allAttendees = data.attendees || []; // 假設 GAS 會回傳 attendees 陣列
+            allAttendees = data.attendees || [];
             
-            // 如果 GAS 尚未回傳名單，為了展示功能，可以使用模擬數據 (正式環境建議移除)
-            if (allAttendees.length === 0 && currentCount > 0) {
-                console.warn('GAS 未回傳詳細名單，暫時使用模擬數據進行展示');
-                // 這裡可以選擇不顯示或顯示提示
-            }
-
-            updateUI();
-            renderAttendees();
+            updateStatsUI();
+            renderAttendeeList();
         } catch (error) {
-            console.error('無法讀取統計數據:', error);
-            if (heroCountEl) heroCountEl.innerText = '--';
-            if (regCountEl) regCountEl.innerText = '--';
-            if (attendeeGrid) attendeeGrid.innerHTML = '<div class="error-msg">暫時無法讀取名單</div>';
+            console.error('統計數據讀取失敗:', error);
+            const errorEls = ['hero-count', 'reg-count'];
+            errorEls.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerText = '--';
+            });
         }
     }
 
-    function renderAttendees() {
-        if (!attendeeGrid) return;
-
-        const searchText = searchName.value.trim().toLowerCase();
-        const selectedBatch = filterGradYear.value;
-
-        // 如果連名單都沒有抓到（可能 GAS 沒回傳 attendees 欄位）
-        if (allAttendees.length === 0) {
-            if (currentCount > 0) {
-                attendeeGrid.innerHTML = `
-                    <div class="info-msg">
-                        <p>📍 目前已有 ${currentCount} 位報名</p>
-                        <p><small>詳細名單同步中，請稍候或聯絡管理員更新數據源。</small></p>
-                    </div>`;
-            } else {
-                attendeeGrid.innerHTML = '<div class="info-msg">目前尚無報名資料</div>';
-            }
-            noResults.classList.add('hidden');
-            return;
-        }
-
-        // 過濾名單
-        const filtered = allAttendees.filter(person => {
-            // 如果沒輸入姓名，則 matchesSearch 視為 true
-            const matchesSearch = !searchText || (person.name && person.name.toLowerCase().includes(searchText));
-            // 如果未選擇級數，則 matchesBatch 視為 true
-            const matchesBatch = !selectedBatch || (person.gradYear === selectedBatch);
-            return matchesSearch && matchesBatch;
-        });
-
-        // 排序：依級數從新到舊，同級數依姓名
-        filtered.sort((a, b) => {
-            const batchA = parseInt(a.gradYear) || 0;
-            const batchB = parseInt(b.gradYear) || 0;
-            if (batchB !== batchA) return batchB - batchA;
-            return (a.name || "").localeCompare(b.name || "", 'zh-Hant');
-        });
-
-        if (filtered.length > 0) {
-            noResults.classList.add('hidden');
-            attendeeGrid.innerHTML = filtered.map((person, index) => `
-                <div class="attendee-card" style="animation-delay: ${Math.min(index * 0.05, 1)}s">
-                    <div class="attendee-name">${person.name || '未知名稱'}</div>
-                    <div class="attendee-batch">${person.gradYear || '未知級數'}</div>
-                </div>
-            `).join('');
-        } else {
-            attendeeGrid.innerHTML = '';
-            noResults.classList.remove('hidden');
-            // 如果有選級數但沒結果
-            if (selectedBatch) {
-                noResults.innerHTML = `找不到符合 <strong>${selectedBatch}</strong> 的隊友，快邀請他們來報名吧！`;
-            } else {
-                noResults.innerHTML = `找不到符合條件的隊友，快邀請他們來報名吧！`;
-            }
-        }
-    }
-
-    // 綁定搜尋與篩選事件
-    if (searchName) searchName.addEventListener('input', renderAttendees);
-    if (filterGradYear) filterGradYear.addEventListener('change', renderAttendees);
-
-    function updateUI() {
-        // 更新主計數器
-        const animate = (el, target) => {
+    function updateStatsUI() {
+        const animate = (id, target) => {
+            const el = document.getElementById(id);
             if (!el) return;
             let start = parseInt(el.innerText) || 0;
-            let duration = 1000;
             let startTime = null;
             function step(timestamp) {
                 if (!startTime) startTime = timestamp;
-                let progress = Math.min((timestamp - startTime) / duration, 1);
+                let progress = Math.min((timestamp - startTime) / 1000, 1);
                 el.innerText = Math.floor(progress * (target - start) + start);
                 if (progress < 1) window.requestAnimationFrame(step);
             }
             window.requestAnimationFrame(step);
         };
 
-        animate(heroCountEl, currentCount);
-        animate(regCountEl, currentCount);
+        animate('hero-count', currentCount);
+        animate('reg-count', currentCount);
 
-        // 更新排行榜
+        const batchBarsEl = document.getElementById('batch-bars');
+        const leadingBatchEl = document.getElementById('leading-batch');
         if (batchBarsEl && batchData.length > 0) {
             const sorted = [...batchData].sort((a, b) => b.count - a.count);
-            const maxCount = sorted[0].count;
             if (leadingBatchEl) leadingBatchEl.innerText = sorted[0].batch;
-
+            const maxCount = sorted[0].count;
             batchBarsEl.innerHTML = sorted.slice(0, 5).map(item => `
                 <div class="batch-bar-item">
                     <div class="batch-label">${item.batch}</div>
@@ -170,206 +147,181 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 初始讀取
-    fetchStats();
-
-    // 處理參加晚宴的顯示邏輯
-    attendBanquet.addEventListener('change', () => {
-        if (attendBanquet.checked) {
-            banquetDetails.style.display = 'block';
-            banquetDetails.style.opacity = '0';
-            setTimeout(() => {
-                banquetDetails.style.transition = 'opacity 0.5s ease';
-                banquetDetails.style.opacity = '1';
-            }, 10);
-        } else {
-            banquetDetails.style.display = 'none';
-        }
-    });
-
-    // 處理攜伴人數的顯示邏輯
-    guestsSelect.addEventListener('change', () => {
-        if (parseInt(guestsSelect.value) > 0) {
-            guestDietGroup.style.display = 'block';
-        } else {
-            guestDietGroup.style.display = 'none';
-        }
-    });
-
-    // 表單提交處理 (正式串接 GAS)
-    regForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    // --- 4. 出席名單渲染 ---
+    function renderAttendeeList() {
+        const attendeeGrid = document.getElementById('attendeeGrid');
+        const noResults = document.getElementById('noResults');
+        const searchName = document.getElementById('searchName');
+        const filterGradYear = document.getElementById('filterGradYear');
         
-        const submitBtn = regForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerText;
-        submitBtn.innerText = '正在提交資料...';
-        submitBtn.disabled = true;
+        if (!attendeeGrid) return;
 
-        const formData = new FormData(regForm);
-        const data = Object.fromEntries(formData.entries());
-        
-        try {
-            const response = await fetch(GAS_URL, {
-                method: 'POST',
-                mode: 'no-cors', // GAS web apps usually require no-cors or redirect handling
-                body: JSON.stringify(data)
-            });
+        const searchText = searchName ? searchName.value.trim().toLowerCase() : '';
+        const selectedBatch = filterGradYear ? filterGradYear.value : '';
 
-            // 成功反饋
-            submitBtn.innerText = '✅ 報名成功！';
-            submitBtn.style.background = '#28a745';
-            
-            setTimeout(() => {
-                alert('感謝您的報名！資料已同步至雲端試算表。');
-                regForm.reset();
-                banquetDetails.style.display = 'none';
-                submitBtn.innerText = originalText;
-                submitBtn.style.background = '';
-                submitBtn.disabled = false;
-                fetchStats(); // 重新讀取人數
-            }, 1500);
-
-        } catch (error) {
-            console.error('提交失敗:', error);
-            alert('抱歉，提交時出現錯誤，請稍後再試。');
-            submitBtn.innerText = originalText;
-            submitBtn.disabled = false;
+        if (allAttendees.length === 0) {
+            if (currentCount > 0) {
+                attendeeGrid.innerHTML = `
+                    <div class="info-msg">
+                        <p>📍 目前已有 ${currentCount} 位報名</p>
+                        <p><small>詳細名單同步中，請稍候或聯絡管理員更新數據源。</small></p>
+                    </div>`;
+            } else {
+                attendeeGrid.innerHTML = '<div class="info-msg">目前尚無報名資料</div>';
+            }
+            if (noResults) noResults.classList.add('hidden');
+            return;
         }
-    });
 
-    // 平滑捲動
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
+        const filtered = allAttendees.filter(person => {
+            const matchesSearch = !searchText || (person.name && person.name.toLowerCase().includes(searchText));
+            const matchesBatch = !selectedBatch || (person.gradYear === selectedBatch);
+            return matchesSearch && matchesBatch;
         });
-    });
 
-    // 捲動時導航欄變色
-    window.addEventListener('scroll', () => {
-        const nav = document.querySelector('.glass-nav');
-        if (window.scrollY > 50) {
-            nav.style.padding = '10px 0';
-            nav.style.background = 'rgba(0, 31, 63, 0.95)';
-        } else {
-            nav.style.padding = '20px 0';
-            nav.style.background = 'rgba(0, 31, 63, 0.8)';
-        }
-    });
-
-    // Mobile Menu Logic
-    const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.getElementById('navLinks');
-    const navLinksItems = document.querySelectorAll('.nav-links a');
-
-    if (menuToggle) {
-        menuToggle.addEventListener('click', () => {
-            menuToggle.classList.toggle('active');
-            navLinks.classList.toggle('active');
+        filtered.sort((a, b) => {
+            const bA = parseInt(a.gradYear) || 0;
+            const bB = parseInt(b.gradYear) || 0;
+            if (bB !== bA) return bB - bA;
+            return (a.name || "").localeCompare(b.name || "", 'zh-Hant');
         });
-    }
 
-    // 點擊選單連結後自動關閉選單
-    navLinksItems.forEach(item => {
-        item.addEventListener('click', () => {
-            menuToggle.classList.remove('active');
-            navLinks.classList.remove('active');
-        });
-    });
-
-    // Admin Panel Logic
-    const adminPanel = document.getElementById('adminPanel');
-    const adminTrigger = document.getElementById('adminTrigger');
-    const closeAdmin = document.getElementById('closeAdmin');
-    const adminItemsList = document.getElementById('admin-items-list');
-    const saveAdmin = document.getElementById('saveAdmin');
-
-    // 初始進度數據
-    const defaultProgressItems = [
-        { id: 1, name: '募款進度', status: '已達標', progress: 100 },
-        { id: 2, name: '晚宴籌劃', status: '已訂位(20桌及舞台)', progress: 70 },
-        { id: 3, name: '紀念品製作', status: '設計打樣中', progress: 40 },
-        { id: 4, name: '休息區佈置', status: '規劃中', progress: 40 },
-        { id: 5, name: '攝影及紀錄安排', status: '攝影人員已確認(義工)', progress: 60 }
-    ];
-
-    // 從 localStorage 讀取或使用預設值
-    let progressItems = JSON.parse(localStorage.getItem('rugby_progress_data')) || defaultProgressItems;
-
-    // 同步進度到首頁 UI
-    function syncProgressUI() {
-        const uiItems = document.querySelectorAll('.progress-item');
-        progressItems.forEach((item, index) => {
-            const uiItem = uiItems[index];
-            if (!uiItem) return;
-
-            const tag = uiItem.querySelector('.status-tag');
-            const bar = uiItem.querySelector('.progress-bar');
-            
-            // 更新文字與進度條
-            tag.innerText = item.status;
-            bar.style.width = item.progress + '%';
-            
-            // 根據進度調整標籤顏色類別
-            tag.className = 'status-tag';
-            if (item.progress === 100) tag.classList.add('success');
-            else if (item.progress > 50) tag.classList.add('warning');
-            else tag.classList.add('info');
-        });
-    }
-
-    function renderAdminItems() {
-        adminItemsList.innerHTML = progressItems.map(item => `
-            <div class="admin-item-edit" data-id="${item.id}">
-                <label>${item.name}</label>
-                <input type="text" value="${item.status}" class="status-input" placeholder="狀態文字" style="margin-bottom: 5px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <input type="range" min="0" max="100" value="${item.progress}" class="progress-slider">
-                    <span class="progress-val">${item.progress}%</span>
+        if (filtered.length > 0) {
+            if (noResults) noResults.classList.add('hidden');
+            attendeeGrid.innerHTML = filtered.map((person, index) => `
+                <div class="attendee-card" style="animation-delay: ${Math.min(index * 0.05, 1)}s">
+                    <div class="attendee-name">${person.name || '未知名稱'}</div>
+                    <div class="attendee-batch">${person.gradYear || '未知'}</div>
                 </div>
-            </div>
-        `).join('');
-
-        // 綁定 slider 數值顯示
-        document.querySelectorAll('.progress-slider').forEach(slider => {
-            slider.addEventListener('input', (e) => {
-                e.target.nextElementSibling.innerText = e.target.value + '%';
-            });
-        });
+            `).join('');
+        } else {
+            attendeeGrid.innerHTML = '';
+            if (noResults) {
+                noResults.classList.remove('hidden');
+                noResults.innerHTML = selectedBatch ? `找不到符合 <strong>${selectedBatch}</strong> 的隊友` : `找不到符合條件的隊友`;
+            }
+        }
     }
 
-    // 初始執行一次同步
-    syncProgressUI();
-
-    adminTrigger.addEventListener('click', () => {
-        adminPanel.style.display = 'block';
-        renderAdminItems();
-    });
-
-    closeAdmin.addEventListener('click', () => {
-        adminPanel.style.display = 'none';
-    });
-
-    saveAdmin.addEventListener('click', () => {
-        const edits = document.querySelectorAll('.admin-item-edit');
-        edits.forEach((edit, index) => {
-            const status = edit.querySelector('.status-input').value;
-            const progress = parseInt(edit.querySelector('.progress-slider').value);
-            
-            // 更新記憶體中的數據
-            progressItems[index].status = status;
-            progressItems[index].progress = progress;
+    // --- 5. 導覽與 UI 效果 ---
+    function initUIEffects() {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
         });
 
-        // 儲存到 localStorage
-        localStorage.setItem('rugby_progress_data', JSON.stringify(progressItems));
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.glass-nav');
+            if (nav) {
+                nav.style.padding = window.scrollY > 50 ? '10px 0' : '20px 0';
+                nav.style.background = window.scrollY > 50 ? 'rgba(0, 31, 63, 0.95)' : 'rgba(0, 31, 63, 0.8)';
+            }
+        });
 
-        // 同步到 UI
-        syncProgressUI();
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        if (menuToggle && navLinks) {
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menuToggle.classList.remove('active');
+                    navLinks.classList.remove('active');
+                });
+            });
+        }
+    }
 
-        alert('進度已同步並儲存至瀏覽器！');
-        adminPanel.style.display = 'none';
-    });
+    // --- 6. 管理後台邏輯 ---
+    function initAdminPanel() {
+        const trigger = document.getElementById('adminTrigger');
+        const panel = document.getElementById('adminPanel');
+        const closeBtn = document.getElementById('closeAdmin');
+        const saveBtn = document.getElementById('saveAdmin');
+        const listContainer = document.getElementById('admin-items-list');
+
+        if (!trigger || !panel) return;
+
+        const defaultItems = [
+            { id: 1, name: '募款進度', status: '已達標', progress: 100 },
+            { id: 2, name: '晚宴籌劃', status: '已訂位', progress: 70 },
+            { id: 3, name: '紀念品製作', status: '設計中', progress: 40 },
+            { id: 4, name: '休息區佈置', status: '規劃中', progress: 40 },
+            { id: 5, name: '攝影紀錄', status: '已確認', progress: 60 }
+        ];
+
+        let items = JSON.parse(localStorage.getItem('rugby_progress_data')) || defaultItems;
+
+        const syncUI = () => {
+            const uiItems = document.querySelectorAll('.progress-item');
+            items.forEach((item, i) => {
+                if (uiItems[i]) {
+                    const tag = uiItems[i].querySelector('.status-tag');
+                    const bar = uiItems[i].querySelector('.progress-bar');
+                    if (tag) tag.innerText = item.status;
+                    if (bar) bar.style.width = item.progress + '%';
+                }
+            });
+        };
+
+        syncUI();
+
+        trigger.addEventListener('click', () => {
+            panel.style.display = 'block';
+            if (listContainer) {
+                listContainer.innerHTML = items.map(item => `
+                    <div class="admin-item-edit">
+                        <label>${item.name}</label>
+                        <input type="text" value="${item.status}" class="status-input">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <input type="range" min="0" max="100" value="${item.progress}" class="ps">
+                            <span>${item.progress}%</span>
+                        </div>
+                    </div>
+                `).join('');
+                listContainer.querySelectorAll('.ps').forEach(s => {
+                    s.addEventListener('input', e => e.target.nextElementSibling.innerText = e.target.value + '%');
+                });
+            }
+        });
+
+        if (closeBtn) closeBtn.addEventListener('click', () => panel.style.display = 'none');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', () => {
+                const edits = panel.querySelectorAll('.admin-item-edit');
+                edits.forEach((edit, i) => {
+                    items[i].status = edit.querySelector('.status-input').value;
+                    items[i].progress = parseInt(edit.querySelector('.ps').value);
+                });
+                localStorage.setItem('rugby_progress_data', JSON.stringify(items));
+                syncUI();
+                alert('已儲存！');
+                panel.style.display = 'none';
+            });
+        }
+    }
+
+    // --- 執行初始化 ---
+    try {
+        initGradYearSelects();
+        initRegistrationForm();
+        initUIEffects();
+        initAdminPanel();
+        
+        // 綁定出席名單即時搜尋事件
+        const sn = document.getElementById('searchName');
+        const fgy = document.getElementById('filterGradYear');
+        if (sn) sn.addEventListener('input', renderAttendeeList);
+        if (fgy) fgy.addEventListener('change', renderAttendeeList);
+
+        // 獲取數據
+        fetchStats();
+    } catch (e) {
+        console.error('初始化過程中發生錯誤:', e);
+    }
 });
