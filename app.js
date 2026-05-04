@@ -159,28 +159,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchText = searchName ? searchName.value.trim().toLowerCase() : '';
         const selectedBatch = filterGradYear ? filterGradYear.value : '';
 
-        // --- 測試邏輯：如果後端沒名單，顯示模擬數據以便確認介面正常 ---
+        // --- 測試邏輯：如果後端名單為空，自動填入範例資料供測試 ---
         let displayList = allAttendees;
-        if (allAttendees.length === 0 && currentCount > 0) {
-            // 這裡可以選擇是否要顯示模擬名單
-            // displayList = [
-            //     { name: "王大明 (範例)", gradYear: "85級" },
-            //     { name: "李小華 (範例)", gradYear: "95級" },
-            //     { name: "張志強 (範例)", gradYear: "105級" }
-            // ];
+        const isMockData = allAttendees.length === 0 && currentCount > 0;
+        
+        if (isMockData) {
+            displayList = [
+                { name: "王大明 (範例)", gradYear: "84級" },
+                { name: "陳小華 (範例)", gradYear: "84級" },
+                { name: "李國華 (範例)", gradYear: "100級" },
+                { name: "張美玲 (範例)", gradYear: "110級" }
+            ];
         }
 
         if (displayList.length === 0) {
-            if (currentCount > 0) {
-                attendeeGrid.innerHTML = `
-                    <div class="info-msg">
-                        <p>📍 目前已有 ${currentCount} 位隊友報名</p>
-                        <p><small>後端 GAS 尚未回傳詳細名單陣列 (attendees field)。</small></p>
-                        <p style="font-size:0.8rem; color:#ccc; margin-top:10px;">請確保您的 GAS 程式碼包含報名名單的輸出。</p>
-                    </div>`;
-            } else {
-                attendeeGrid.innerHTML = '<div class="info-msg">目前尚無報名資料</div>';
-            }
+            attendeeGrid.innerHTML = '<div class="info-msg">目前尚無報名資料</div>';
             if (noResults) noResults.classList.add('hidden');
             return;
         }
@@ -191,23 +184,23 @@ document.addEventListener('DOMContentLoaded', () => {
             return matchesSearch && matchesBatch;
         });
 
-        filtered.sort((a, b) => {
-            const bA = parseInt(a.gradYear) || 0;
-            const bB = parseInt(b.gradYear) || 0;
-            if (bB !== bA) return bB - bA;
-            return (a.name || "").localeCompare(b.name || "", 'zh-Hant');
-        });
+        // 顯示 GAS 狀態提示
+        const statusNotice = isMockData ? `
+            <div class="backend-notice">
+                <p>⚠️ 偵測到後端資料不完整，目前顯示「範例名單」供功能測試。</p>
+                <p><small>請確保您的 GAS 回傳了 attendees 陣列（包含 name 與 gradYear 欄位）。</small></p>
+            </div>` : '';
 
         if (filtered.length > 0) {
             if (noResults) noResults.classList.add('hidden');
-            attendeeGrid.innerHTML = filtered.map((person, index) => `
+            attendeeGrid.innerHTML = statusNotice + '<div class="attendee-grid-inner">' + filtered.map((person, index) => `
                 <div class="attendee-card" style="animation-delay: ${Math.min(index * 0.05, 1)}s">
                     <div class="attendee-name">${person.name || '未知名稱'}</div>
                     <div class="attendee-batch">${person.gradYear || '未知'}</div>
                 </div>
-            `).join('');
+            `).join('') + '</div>';
         } else {
-            attendeeGrid.innerHTML = '';
+            attendeeGrid.innerHTML = statusNotice;
             if (noResults) {
                 noResults.classList.remove('hidden');
                 noResults.innerHTML = selectedBatch ? `找不到符合 <strong>${selectedBatch}</strong> 的隊友` : `找不到符合條件的隊友`;
@@ -328,8 +321,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // 綁定出席名單即時搜尋事件
         const sn = document.getElementById('searchName');
         const fgy = document.getElementById('filterGradYear');
+        const sbtn = document.getElementById('searchBtn');
+
         if (sn) sn.addEventListener('input', renderAttendeeList);
         if (fgy) fgy.addEventListener('change', renderAttendeeList);
+        if (sbtn) sbtn.addEventListener('click', renderAttendeeList);
 
         // 獲取數據
         fetchStats();

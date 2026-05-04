@@ -698,18 +698,55 @@ h1, h2, h3 {
     background: rgba(255, 255, 255, 0.1);
 }
 
+.search-btn {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--gold);
+    border: none;
+    border-radius: 6px;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background: white;
+    transform: translateY(-50%) scale(1.1);
+}
+
 /* 修正下拉選單選項顏色 */
 .filter-select-group select option {
     background-color: #001f3f; /* 使用深藍色背景 */
     color: white;
 }
 
-.search-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0.5;
+.backend-notice {
+    grid-column: 1 / -1;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid var(--gold);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.backend-notice p {
+    color: var(--gold);
+    margin: 0;
+    font-weight: 600;
+}
+
+.attendee-grid-inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    grid-column: 1 / -1;
 }
 
 .attendee-grid {
