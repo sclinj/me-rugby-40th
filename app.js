@@ -264,21 +264,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const defaultItems = [
             { id: 1, name: '募款進度', status: '已達標', progress: 100 },
             { id: 2, name: '晚宴籌劃', status: '已訂位', progress: 70 },
-            { id: 3, name: '紀念品製作', status: '設計中', progress: 40 },
-            { id: 4, name: '休息區佈置', status: '規劃中', progress: 40 },
-            { id: 5, name: '攝影紀錄', status: '已確認', progress: 60 }
+            { id: 3, name: '紀念品製作', status: '打樣中', progress: 40 },
+            { id: 4, name: '球場休息區', status: '規劃中', progress: 30 },
+            { id: 5, name: '攝影及紀錄', status: '已確認', progress: 60 }
         ];
 
         let items = JSON.parse(localStorage.getItem('rugby_progress_data')) || defaultItems;
 
         const syncUI = () => {
-            const uiItems = document.querySelectorAll('.progress-item');
+            const uiItems = document.querySelectorAll('.progress-card');
             items.forEach((item, i) => {
                 if (uiItems[i]) {
                     const tag = uiItems[i].querySelector('.status-tag');
-                    const bar = uiItems[i].querySelector('.progress-bar');
+                    const bar = uiItems[i].querySelector('.progress-bar-inner');
+                    const percent = uiItems[i].querySelector('.progress-percent');
                     if (tag) tag.innerText = item.status;
                     if (bar) bar.style.width = item.progress + '%';
+                    if (percent) percent.innerText = item.progress + '%';
                 }
             });
         };

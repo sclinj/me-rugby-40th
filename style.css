@@ -490,180 +490,205 @@ h1, h2, h3 {
     gap: 20px;
 }
 
-/* Stats */
+/* Stats Dashboard */
 .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 調整為兩個主要數據 */
-    gap: 30px;
-    margin-bottom: 50px;
-    max-width: 700px;
+    display: flex;
+    gap: 25px;
+    margin-bottom: 40px;
+    max-width: 900px;
     margin-left: auto;
     margin-right: auto;
-}
-
-.highlight-card {
-    border: 2px solid var(--primary-red);
-    background: rgba(128, 0, 0, 0.1) !important;
-}
-
-/* 進度條網格 */
-.progress-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    max-width: 800px;
-    margin: 0 auto 50px;
-    text-align: left;
-}
-
-.progress-item {
-    background: rgba(255, 255, 255, 0.8);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-
-.progress-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    font-weight: 600;
-    color: var(--navy-blue);
-}
-
-.status-tag {
-    font-size: 0.75rem;
-    padding: 4px 12px;
-    border-radius: 20px;
-    color: white;
-}
-
-.status-tag.success { background: #28a745; }
-.status-tag.warning { background: #ffc107; color: #333; }
-.status-tag.info { background: #17a2b8; }
-
-.progress-bar-container {
-    width: 100%;
-    height: 8px;
-    background: #e9ecef;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    background: var(--primary-red);
-    border-radius: 10px;
-    transition: width 1s ease-in-out;
+    flex-wrap: wrap;
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.95);
     padding: 30px;
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: var(--transition);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    flex: 1;
+    min-width: 280px;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
 }
 
 .stat-value {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--navy-blue);
-    margin-bottom: 10px;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--primary-red);
+    margin-bottom: 5px;
+    font-family: 'Inter', sans-serif;
 }
 
 .stat-label {
     text-transform: uppercase;
     letter-spacing: 2px;
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--navy-blue);
+    opacity: 0.8;
+}
+
+.highlight-card {
+    background: linear-gradient(135deg, var(--navy-blue), #003366);
+    color: white !important;
+    border: none;
+}
+
+.highlight-card .stat-value {
+    color: var(--gold);
+}
+
+.highlight-card .stat-label {
+    color: white;
+    opacity: 0.9;
 }
 
 .gold-bg {
-    background: linear-gradient(135deg, var(--gold), #f9d976);
+    background: linear-gradient(135deg, #f5d76e 0%, #e1b12c 100%);
     position: relative;
     overflow: hidden;
+    padding: 100px 0;
 }
 
 .fund-mascot-bg {
     position: absolute;
-    right: -50px;
-    bottom: -50px;
-    width: 300px;
-    opacity: 0.15;
-    transform: rotate(-15deg);
+    right: -20px;
+    bottom: -20px;
+    width: 280px;
+    opacity: 0.08;
+    transform: rotate(-10deg);
     pointer-events: none;
-}
-
-.fund-mascot-bg img {
-    width: 100%;
 }
 
 .fund-thanks {
     font-size: 1.1rem;
-    font-weight: 500;
-    margin-top: 40px;
+    font-weight: 600;
+    margin-top: 50px;
+    color: var(--navy-blue);
+    opacity: 0.6;
 }
 
-.batch-stats-container {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 30px;
-    border-radius: 15px;
-    max-width: 800px;
+/* Dashboard Progress Cards */
+.progress-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+    max-width: 1200px;
     margin: 40px auto 0;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.progress-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: var(--transition);
     text-align: left;
 }
 
-.sub-title {
-    font-size: 1.2rem;
-    color: var(--navy-blue);
-    margin-bottom: 20px;
-    border-bottom: 2px solid var(--gold);
-    display: inline-block;
-    padding-bottom: 5px;
+.progress-card:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
 }
 
-.batch-bars {
+.progress-header {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
-.batch-bar-item {
+.progress-title-group {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
 }
 
-.batch-label {
-    width: 60px;
-    font-weight: 700;
-    font-size: 0.9rem;
+.progress-icon {
+    font-size: 1.5rem;
+    background: white;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.progress-card h4 {
     color: var(--navy-blue);
+    font-weight: 700;
+    font-size: 1.05rem;
 }
 
-.batch-progress-wrap {
-    flex-grow: 1;
+.status-tag {
+    font-size: 0.7rem;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.progress-bar-outer {
     height: 12px;
-    background: #eee;
+    background: #eef2f5;
     border-radius: 10px;
     overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.batch-progress-fill {
+.progress-bar-inner {
     height: 100%;
-    background: linear-gradient(to right, var(--primary-red), #c0392b);
     border-radius: 10px;
-    transition: width 1s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    position: relative;
+    transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background-size: 200% 200%;
 }
 
-.batch-count {
-    width: 40px;
+.gradient-red { background: linear-gradient(90deg, #c0392b, #e74c3c); }
+.gradient-blue { background: linear-gradient(90deg, #2980b9, #3498db); }
+.gradient-gold { background: linear-gradient(90deg, #d4af37, #f1c40f); }
+.gradient-green { background: linear-gradient(90deg, #27ae60, #2ecc71); }
+
+.progress-bar-inner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shine 2s infinite;
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.progress-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 0.8rem;
     font-weight: 600;
-    font-size: 0.9rem;
-    text-align: right;
+    color: #666;
+}
+
+.progress-percent {
+    color: var(--primary-red);
+    font-weight: 800;
 }
 
 /* Attendees List Styles */
