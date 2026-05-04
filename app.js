@@ -322,12 +322,55 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- 7. 相片輪播邏輯 ---
+    function initPhotoGallery() {
+        const slides = document.querySelectorAll('.gallery-slide');
+        const dots = document.querySelectorAll('.dot');
+        let currentSlide = 0;
+        let slideInterval;
+
+        if (slides.length === 0) return;
+
+        function showSlide(index) {
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            let next = (currentSlide + 1) % slides.length;
+            showSlide(next);
+        }
+
+        function startAutoPlay() {
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+
+        function stopAutoPlay() {
+            clearInterval(slideInterval);
+        }
+
+        dots.forEach((dot, i) => {
+            dot.addEventListener('click', () => {
+                showSlide(i);
+                stopAutoPlay();
+                startAutoPlay();
+            });
+        });
+
+        startAutoPlay();
+    }
+
     // --- 執行初始化 ---
     try {
         initGradYearSelects();
         initRegistrationForm();
         initUIEffects();
         initAdminPanel();
+        initPhotoGallery();
         
         // 綁定出席名單即時搜尋事件
         const sn = document.getElementById('searchName');
