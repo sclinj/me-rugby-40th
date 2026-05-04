@@ -159,12 +159,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchText = searchName ? searchName.value.trim().toLowerCase() : '';
         const selectedBatch = filterGradYear ? filterGradYear.value : '';
 
-        if (allAttendees.length === 0) {
+        // --- 測試邏輯：如果後端沒名單，顯示模擬數據以便確認介面正常 ---
+        let displayList = allAttendees;
+        if (allAttendees.length === 0 && currentCount > 0) {
+            // 這裡可以選擇是否要顯示模擬名單
+            // displayList = [
+            //     { name: "王大明 (範例)", gradYear: "85級" },
+            //     { name: "李小華 (範例)", gradYear: "95級" },
+            //     { name: "張志強 (範例)", gradYear: "105級" }
+            // ];
+        }
+
+        if (displayList.length === 0) {
             if (currentCount > 0) {
                 attendeeGrid.innerHTML = `
                     <div class="info-msg">
-                        <p>📍 目前已有 ${currentCount} 位報名</p>
-                        <p><small>詳細名單同步中，請稍候或聯絡管理員更新數據源。</small></p>
+                        <p>📍 目前已有 ${currentCount} 位隊友報名</p>
+                        <p><small>後端 GAS 尚未回傳詳細名單陣列 (attendees field)。</small></p>
+                        <p style="font-size:0.8rem; color:#ccc; margin-top:10px;">請確保您的 GAS 程式碼包含報名名單的輸出。</p>
                     </div>`;
             } else {
                 attendeeGrid.innerHTML = '<div class="info-msg">目前尚無報名資料</div>';
@@ -173,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const filtered = allAttendees.filter(person => {
+        const filtered = displayList.filter(person => {
             const matchesSearch = !searchText || (person.name && person.name.toLowerCase().includes(searchText));
             const matchesBatch = !selectedBatch || (person.gradYear === selectedBatch);
             return matchesSearch && matchesBatch;

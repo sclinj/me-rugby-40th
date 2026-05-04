@@ -698,6 +698,12 @@ h1, h2, h3 {
     background: rgba(255, 255, 255, 0.1);
 }
 
+/* 修正下拉選單選項顏色 */
+.filter-select-group select option {
+    background-color: #001f3f; /* 使用深藍色背景 */
+    color: white;
+}
+
 .search-icon {
     position: absolute;
     right: 15px;
