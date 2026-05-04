@@ -61,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 try {
                     const formData = new FormData(regForm);
                     
-                    // 顯式構建資料物件，確保鍵值順序與內容正確
                     const data = {
                         name: formData.get('name'),
                         gradYear: formData.get('gradYear'),
