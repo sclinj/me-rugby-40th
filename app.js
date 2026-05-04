@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (leadingBatchEl) leadingBatchEl.innerText = sorted[0].batch;
             const maxCount = sorted[0].count;
             batchBarsEl.innerHTML = sorted.slice(0, 5).map(item => `
-                <div class="batch-bar-item">
+                <div class="batch-bar-item" data-batch="${item.batch}">
                     <div class="batch-label">${item.batch}</div>
                     <div class="batch-progress-wrap">
                         <div class="batch-progress-fill" style="width: ${(item.count / maxCount) * 100}%"></div>
@@ -153,6 +153,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="batch-count">${item.count}</div>
                 </div>
             `).join('');
+
+            // 為級數排行榜加入點擊事件
+            batchBarsEl.querySelectorAll('.batch-bar-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const batch = item.getAttribute('data-batch');
+                    scrollToAttendees(batch);
+                });
+            });
+        }
+    }
+
+    // --- 3.5 點擊統計數據捲動與過濾 ---
+    function scrollToAttendees(batch = '') {
+        const target = document.getElementById('attendees');
+        const filterGradYear = document.getElementById('filterGradYear');
+        const searchName = document.getElementById('searchName');
+
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+            
+            if (batch) {
+                // 如果有指定級數，設定過濾器並重新渲染
+                if (filterGradYear) filterGradYear.value = batch;
+                if (searchName) searchName.value = ''; // 清空姓名搜尋以避免衝突
+                renderAttendeeList();
+            }
         }
     }
 
@@ -383,6 +409,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 獲取數據
         fetchStats();
+
+        // 綁定 Hero 區塊統計數據點擊事件
+        const statHeroCount = document.getElementById('stat-hero-count');
+        const statLeadingBatch = document.getElementById('stat-leading-batch');
+
+        if (statHeroCount) {
+            statHeroCount.addEventListener('click', () => scrollToAttendees());
+        }
+        if (statLeadingBatch) {
+            statLeadingBatch.addEventListener('click', () => {
+                const batchText = document.getElementById('leading-batch').innerText;
+                scrollToAttendees(batchText);
+            });
+        }
     } catch (e) {
         console.error('初始化過程中發生錯誤:', e);
     }

@@ -283,6 +283,40 @@ h1, h2, h3 {
     backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     margin-bottom: 15px;
+    transition: var(--transition);
+}
+
+.clickable-stat {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+.clickable-stat:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+}
+
+.clickable-stat::after {
+    content: '點擊查看名單';
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--gold);
+    opacity: 0;
+    transition: var(--transition);
+    white-space: nowrap;
+    pointer-events: none;
+    font-weight: 600;
+}
+
+.clickable-stat:hover::after {
+    opacity: 1;
+    bottom: -30px;
 }
 
 .batch-leaderboard {
@@ -618,6 +652,19 @@ h1, h2, h3 {
     display: flex;
     align-items: center;
     gap: 15px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.batch-bar-item:hover {
+    background: rgba(0, 0, 0, 0.03);
+    transform: translateX(5px);
+}
+
+.batch-bar-item:hover .batch-label {
+    color: var(--primary-red);
 }
 
 .batch-label {
