@@ -443,16 +443,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 7.5 外部連結安全性提醒 ---
+    // --- 7.5 外部連結安全性提醒 ---
     function initExternalLinks() {
-        const albumBtn = document.getElementById('btn-google-photos');
-        if (albumBtn) {
-            albumBtn.addEventListener('click', (e) => {
-                const confirmLeave = confirm('您即將前往外部相簿空間 (Google Photos)。\n此空間由 82 級培富學長提供，您可以在該處欣賞或上傳活動照片。\n\n是否繼續？');
+        const externalLinks = document.querySelectorAll('.external-album, #btn-google-photos');
+        
+        externalLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const albumTitle = link.querySelector('h4') ? link.querySelector('h4').innerText : '雲端相簿';
+                const confirmLeave = confirm(`您即將前往外部相簿：\n【${albumTitle}】\n\n此空間由 82 級培富學長提供，是否繼續？`);
                 if (!confirmLeave) {
                     e.preventDefault();
                 }
             });
-        }
+        });
     }
 
     // --- 7.6 捲動顯現效果 ---
