@@ -238,8 +238,60 @@ document.addEventListener('DOMContentLoaded', () => {
             attendeeGrid.innerHTML = '';
             if (noResults) {
                 noResults.classList.remove('hidden');
-                noResults.innerHTML = selectedBatch ? `找不到符合 <strong>${selectedBatch}</strong> 的隊友` : `找不到符合條件的隊友`;
+                const noResultsText = noResults.querySelector('.no-results-text');
+                const inviteHeader = noResults.querySelector('.invite-card h4');
+                const lineBtn = document.getElementById('lineInviteBtn');
+                
+                if (selectedBatch && !searchText) {
+                    if (noResultsText) noResultsText.innerHTML = `目前還沒有 <strong>${selectedBatch}</strong> 的隊友報名`;
+                    if (inviteHeader) inviteHeader.innerText = `號召 ${selectedBatch} 的老友？`;
+                } else if (searchText) {
+                    if (noResultsText) noResultsText.innerHTML = `找不到符合 <strong>${searchText}</strong> 的隊友`;
+                    if (inviteHeader) inviteHeader.innerText = `沒看到 ${searchText} 報名？`;
+                } else {
+                    if (noResultsText) noResultsText.innerText = `找不到符合條件的隊友`;
+                    if (inviteHeader) inviteHeader.innerText = `還沒看到老友報名？`;
+                }
             }
+        }
+    }
+
+    // --- 4.5 LINE 分享邏輯 ---
+    function initLineSharing() {
+        const siteUrl = 'https://me-rugby-40th.vercel.app/';
+        
+        function shareToLine(text) {
+            const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
+            window.open(lineUrl, '_blank');
+        }
+
+        const lineInviteBtn = document.getElementById('lineInviteBtn');
+        const lineShareGeneral = document.getElementById('lineShareGeneral');
+        const searchName = document.getElementById('searchName');
+        const filterGradYear = document.getElementById('filterGradYear');
+
+        if (lineInviteBtn) {
+            lineInviteBtn.addEventListener('click', () => {
+                const name = searchName ? searchName.value.trim() : '';
+                const batch = filterGradYear ? filterGradYear.value : '';
+                
+                let message = '';
+                if (name) {
+                    message = `嘿 ${name}，成大機械橄欖球 40 週年慶典開始報名了！我剛在名單上沒看到你，快來報名敘舊吧！球場見！\n\n🔗 立即查看名單與報名：${siteUrl}`;
+                } else if (batch) {
+                    message = `【成大機械橄欖球 40 週年】各路 OB 注意！${batch} 的報名名單還沒看到你？快來看看誰已經報名了！\n\n🔗 立即查看名單：${siteUrl}`;
+                } else {
+                    message = `成大機械橄欖球 40 週年慶典報名中！好多老隊友都回來了，就差你了，快來看看誰報名了！\n\n🔗 立即查看名單：${siteUrl}`;
+                }
+                shareToLine(message);
+            });
+        }
+
+        if (lineShareGeneral) {
+            lineShareGeneral.addEventListener('click', () => {
+                const message = `【成大機械橄欖球 40 週年】傳承榮耀，再續前緣。2026/06/27 誠摯邀請歷屆 OB 回家！立即查看出席芳名錄與報名詳情。\n\n🔗 活動網站：${siteUrl}`;
+                shareToLine(message);
+            });
         }
     }
 
@@ -430,6 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initPhotoGallery();
         initExternalLinks();
         initReveal();
+        initLineSharing();
         
         // 綁定出席名單即時搜尋事件
         const sn = document.getElementById('searchName');

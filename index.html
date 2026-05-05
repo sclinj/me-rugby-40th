@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>成大機械橄欖球隊 40 週年推廣網站</title>
     <meta name="description" content="成大機械橄欖球隊 40 週年慶典活動預告與 OB 報名系統。連結過去歷史與今日傳承。">
+    
+    <!-- Open Graph / Facebook / LINE -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://me-rugby-40th.vercel.app/">
+    <meta property="og:title" content="成大機械橄欖球隊 40 週年慶典｜傳承榮耀，再續前緣">
+    <meta property="og:description" content="2026.06.27 誠摯邀請歷屆 OB 回家！立即查看出席芳名錄，看看老隊友們在哪裡。">
+    <meta property="og:image" content="https://me-rugby-40th.vercel.app/rugby_hero_bg.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="成大機械橄欖球隊 40 週年慶典">
+    <meta property="twitter:description" content="2026.06.27 誠摯邀請歷屆 OB 回家！立即查看出席名單。">
+    <meta property="twitter:image" content="https://me-rugby-40th.vercel.app/rugby_hero_bg.png">
+
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -256,7 +270,31 @@
                     <div class="loading-spinner">載入名單中...</div>
                 </div>
                 <div id="noResults" class="no-results hidden">
-                    找不到符合條件的隊友，快邀請他們來報名吧！
+                    <div class="no-results-content">
+                        <p class="no-results-text">找不到符合條件的隊友...</p>
+                        <div class="invite-card reveal">
+                            <div class="invite-icon">🤝</div>
+                            <h4>還沒看到老友報名？</h4>
+                            <p>一通訊息，找回當年的球場默契。立即透過 LINE 邀請他！</p>
+                            <button id="lineInviteBtn" class="btn-line">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="LINE Logo" class="line-icon-small">
+                                傳送 LINE 邀請老友
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- General Invite Section -->
+            <div class="general-invite reveal">
+                <div class="invite-glass-card">
+                    <div class="invite-text">
+                        <h3>呼朋引伴，齊聚成大</h3>
+                        <p>這份名單還少了他嗎？將網站分享到群組，讓大家知道 40 週年慶的消息！</p>
+                    </div>
+                    <button id="lineShareGeneral" class="btn-line-outline">
+                        分享到 LINE 群組
+                    </button>
                 </div>
             </div>
         </div>

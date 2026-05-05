@@ -1361,3 +1361,144 @@ footer {
     align-items: center;
     height: 100%;
 }
+
+/* --- Attendee List & Invite UI --- */
+.attendee-grid-container {
+    margin-top: 30px;
+    min-height: 200px;
+}
+
+.no-results {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.no-results-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.no-results-text {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+.invite-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.invite-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.invite-card h4 {
+    color: var(--gold);
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+}
+
+.invite-card p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 25px;
+}
+
+.btn-line {
+    background-color: #06C755;
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(6, 199, 85, 0.3);
+    width: 100%;
+}
+
+.btn-line:hover {
+    background-color: #05b34c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(6, 199, 85, 0.4);
+}
+
+.line-icon-small {
+    width: 24px;
+    height: 24px;
+}
+
+.general-invite {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.invite-glass-card {
+    background: linear-gradient(135deg, rgba(128, 0, 0, 0.2), rgba(212, 175, 55, 0.1));
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 20px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    text-align: left;
+}
+
+.invite-text h3 {
+    color: var(--gold);
+    margin-bottom: 8px;
+    font-family: 'Playfair Display', serif;
+}
+
+.invite-text p {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+.btn-line-outline {
+    background: transparent;
+    border: 2px solid #06C755;
+    color: #06C755;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-line-outline:hover {
+    background: #06C755;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .invite-glass-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    .btn-line-outline {
+        width: 100%;
+    }
+}
+
