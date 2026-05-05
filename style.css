@@ -1226,10 +1226,10 @@ h1, h2, h3 {
     box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(212, 175, 55, 0.2);
 }
 
-/* 高質感字卡相簿封面 */
+/* 高質感 Logo 版相簿封面 */
 .album-card-graphic {
     height: 180px;
-    background: linear-gradient(135deg, var(--primary-red), #500000);
+    background: linear-gradient(135deg, #001f3f 0%, #001122 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1239,46 +1239,31 @@ h1, h2, h3 {
     border-bottom: 2px solid var(--gold);
 }
 
+.album-logo-overlay {
+    width: 130px;
+    height: auto;
+    opacity: 0.9;
+    z-index: 2;
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.4));
+    transition: transform 0.4s ease;
+}
+
 .album-year-badge {
-    font-size: 4rem;
+    font-size: 5rem;
     font-family: 'Playfair Display', serif;
     font-weight: 900;
-    color: rgba(212, 175, 55, 0.12); /* 浮水印效果 */
+    color: rgba(255, 255, 255, 0.04); /* 極淡的背景水印 */
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    bottom: -15px;
+    right: 10px;
     z-index: 1;
     pointer-events: none;
-    letter-spacing: -2px;
+    font-style: italic;
+    letter-spacing: -3px;
 }
 
-.album-icon-rugby {
-    width: 65px;
-    height: 38px;
-    background: linear-gradient(135deg, var(--gold), #B8860B);
-    border-radius: 50%; /* 橢圓形英式橄欖球 */
-    position: relative;
-    z-index: 2;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.2);
-}
-
-/* 橄欖球紋理（無美式足球縫線） */
-.album-icon-rugby::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background: rgba(0,0,0,0.1);
-    transform: translateY(-50%);
-}
-
-.album-card:hover .album-icon-rugby {
-    transform: scale(1.1) rotate(5deg);
-    transition: transform 0.3s ease;
+.album-card:hover .album-logo-overlay {
+    transform: scale(1.08) rotate(2deg);
 }
 
 .album-info {
