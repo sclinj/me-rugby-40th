@@ -204,7 +204,7 @@ h1, h2, h3 {
 /* Hero Section */
 .hero {
     min-height: 100vh;
-    background: url('rugby_hero_bg_sunny.png') no-repeat center center/cover;
+    background: url('rugby_hero_bg_ncku.png') no-repeat center center/cover;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -221,7 +221,7 @@ h1, h2, h3 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 31, 63, 0.5), rgba(128, 0, 0, 0.2), rgba(0,0,0,0.4));
+    background: linear-gradient(to bottom, rgba(0, 15, 30, 0.75) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.6) 100%);
 }
 
 .hero-content {
@@ -233,6 +233,7 @@ h1, h2, h3 {
     flex-direction: column;
     align-items: center;
     z-index: 10;
+    text-shadow: 0 2px 15px rgba(0,0,0,0.8);
 }
 
 
