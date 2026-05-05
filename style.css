@@ -204,7 +204,7 @@ h1, h2, h3 {
 /* Hero Section */
 .hero {
     min-height: 100vh;
-    background: url('rugby_hero_bg.png') no-repeat center center/cover;
+    background: url('rugby_hero_bg_sunny.png') no-repeat center center/cover;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -221,7 +221,7 @@ h1, h2, h3 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 31, 63, 0.7), rgba(128, 0, 0, 0.4));
+    background: linear-gradient(to bottom, rgba(0, 31, 63, 0.5), rgba(128, 0, 0, 0.2), rgba(0,0,0,0.4));
 }
 
 .hero-content {
