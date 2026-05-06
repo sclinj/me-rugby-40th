@@ -690,7 +690,7 @@ function initNostalgicFlash() {
     overlay.className = 'memory-flash-overlay';
     document.body.appendChild(overlay);
 
-    const targetBtn = document.querySelector('.hero-btns .btn-outline'); 
+    const targetBtn = document.querySelector('.hero-btns .btn-secondary'); // 修正：指向重溫經典按鈕
     if (!targetBtn) return;
 
     const targetRect = targetBtn.getBoundingClientRect();
