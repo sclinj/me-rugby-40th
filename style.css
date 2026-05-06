@@ -82,25 +82,28 @@ h1, h2, h3 {
     will-change: transform, opacity; /* 強制啟動 GPU 加速 */
 }
 
-/* 手機版：進一步精簡以提升流暢度 */
+/* 手機版：恢復旋轉並強化 GPU 加速 */
 @media (max-width: 768px) {
     .memory-particle {
-        width: 220px;
-        height: 165px;
-        margin-left: -110px;
-        margin-top: -85px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        width: 200px;
+        height: 150px;
+        margin-left: -100px;
+        margin-top: -75px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        /* 強制 3D 渲染層 */
+        backface-visibility: hidden;
+        perspective: 1000px;
     }
     .memory-caption {
         font-size: 0.85rem;
         padding: 8px;
     }
-    /* 手機版簡化動畫路徑：減少運算量 */
+    /* 修正：將旋轉效果加回關鍵影格，並使用 translate3d */
     @keyframes carouselIn {
-        0% { opacity: 0; transform: translateZ(-400px) rotateY(-45deg); }
-        30% { opacity: 1; transform: translateZ(100px) rotateY(0deg) scale(1.1); }
-        70% { opacity: 1; transform: translateZ(100px) rotateY(0deg) scale(1); }
-        100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.01); }
+        0% { opacity: 0; transform: translate3d(-100px, 0, -400px) rotateY(-60deg); }
+        30% { opacity: 1; transform: translate3d(0, 0, 100px) rotateY(0deg) scale(1.1); }
+        70% { opacity: 1; transform: translate3d(0, 0, 100px) rotateY(0deg) scale(1); }
+        100% { opacity: 0; transform: translate3d(var(--tx), var(--ty), -300px) rotate(360deg) scale(0.01); }
     }
 }
 
