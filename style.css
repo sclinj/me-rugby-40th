@@ -398,6 +398,21 @@ h1, h2, h3 {
     color: var(--navy-blue);
 }
 
+.btn-secondary {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--gold);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    backdrop-filter: blur(5px);
+    margin-left: 20px;
+}
+
+.btn-secondary:hover {
+    background: rgba(212, 175, 55, 0.25);
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
 .btn-block {
     width: 100%;
 }
@@ -1237,6 +1252,25 @@ h1, h2, h3 {
     position: relative;
     overflow: hidden;
     border-bottom: 2px solid var(--gold);
+    transition: var(--transition);
+}
+
+/* 影像背景模式 */
+.album-card-graphic.has-bg {
+    background-size: cover;
+    background-position: center;
+}
+
+/* 影像背景下的深色遮罩 */
+.album-card-graphic.has-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 31, 63, 0.2) 0%, rgba(0, 31, 63, 0.8) 100%);
+    z-index: 1;
 }
 
 .album-logo-overlay {
@@ -1252,11 +1286,11 @@ h1, h2, h3 {
     font-size: 5rem;
     font-family: 'Playfair Display', serif;
     font-weight: 900;
-    color: rgba(255, 255, 255, 0.04); /* 極淡的背景水印 */
+    color: rgba(255, 255, 255, 0.08); /* 稍微增加透明度以在照片上可見 */
     position: absolute;
     bottom: -15px;
     right: 10px;
-    z-index: 1;
+    z-index: 2; /* 確保在遮罩上方 */
     pointer-events: none;
     font-style: italic;
     letter-spacing: -3px;
