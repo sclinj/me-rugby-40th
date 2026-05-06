@@ -106,9 +106,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             
             currentCount = data.total || 0;
-            batchData = data.batchData || [];
             allAttendees = data.attendees || [];
-            progressItems = data.progressItems || getDefaultProgressItems();
+            
+            // 處理級數統計 (相容 "84級" 或 "84" 格式)
+            const batchCounts = {};
+            allAttendees.forEach(a => {
+                let batch = String(a.gradYear || '').replace(/[^0-9]/g, '');
+                if (batch) {
+                    batchCounts[batch] = (batchCounts[batch] || 0) + 1;
+                }
+            });
+            batchData = Object.keys(batchCounts).map(b => ({ batch: b + '級', count: batchCounts[b] }));
+
+            // 進度項目處理 (若後端為空則使用預設)
+            progressItems = (data.progressItems && data.progressItems.length > 0) 
+                            ? data.progressItems 
+                            : getDefaultProgressItems();
             
             updateStatsUI();
             renderAttendeeList();
