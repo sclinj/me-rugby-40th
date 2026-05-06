@@ -728,7 +728,12 @@ function initNostalgicFlash() {
         setTimeout(() => {
             const particle = document.createElement('div');
             particle.className = 'memory-particle';
-            particle.style.backgroundImage = `url(${displayPhotos[i].url})`;
+            
+            // 使用 img 標籤代替 background-image，並加上隨機參數破除快取
+            const img = document.createElement('img');
+            img.src = `${displayPhotos[i].url}?t=${Date.now()}`;
+            img.loading = 'eager'; // 強制立即解碼
+            particle.appendChild(img);
             
             const caption = document.createElement('div');
             caption.className = 'memory-caption';

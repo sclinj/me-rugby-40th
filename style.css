@@ -71,29 +71,35 @@ h1, h2, h3 {
     top: 50%;
     margin-left: -150px;
     margin-top: -112px;
-    background-size: cover;
-    background-position: center;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     border: 2px solid rgba(255, 255, 255, 0.2);
     opacity: 0;
     z-index: 10000;
     transform-style: preserve-3d;
-    will-change: transform, opacity; /* 強制啟動 GPU 加速 */
 }
 
-/* 手機版：移除高耗能 3D，改用流暢 2D 漩渦 */
+.memory-particle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* 手機版：針對 iPhone 15 Pro 極致優化 */
 @media (max-width: 768px) {
     .memory-particle {
-        width: 180px; /* 再縮小一點點 */
+        width: 180px;
         height: 135px;
         margin-left: -90px;
         margin-top: -67px;
-        box-shadow: none !important; /* iPhone 嚴禁陰影以保流暢 */
-        border: 1px solid rgba(255, 255, 255, 0.4); /* 用邊框代替陰影 */
+        box-shadow: none !important;
+        border: 1px solid rgba(255, 255, 255, 0.4);
         transform-style: flat;
-        will-change: transform, opacity;
-        -webkit-transform: translateZ(0); /* 針對 Safari 的硬體加速 */
+        /* 移除 will-change 以避免 iPhone 顯存佔用 */
+    }
+    .memory-particle img {
+        border-radius: 8px;
     }
     .memory-caption {
         font-size: 0.65rem;
