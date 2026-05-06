@@ -685,8 +685,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (isAtTop && isValidPage) {
             const isMobile = window.innerWidth <= 768;
-            // 針對手機版增加啟動延遲，避開網頁載入時的 CPU 高峰 (iPhone 優化)
-            const delay = isMobile ? 800 : 100;
+            // 極致優化：iPhone 啟動延遲拉長到 1.2 秒，避開所有背景負載
+            const delay = isMobile ? 1200 : 100;
             setTimeout(() => {
                 initNostalgicFlash();
             }, delay);
@@ -716,8 +716,8 @@ function initNostalgicFlash() {
     const isMobile = window.innerWidth <= 768;
 
     particles.forEach((particle, i) => {
-        // 手機版只播前兩張 (p1, p2)
-        if (isMobile && i >= 2) {
+        // 極致優化：手機版只播第一張 (p1)
+        if (isMobile && i >= 1) {
             particle.style.display = 'none';
             return;
         }
