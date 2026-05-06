@@ -117,8 +117,8 @@ h1, h2, h3 {
     }
     100% { 
         opacity: 0; 
-        /* 更精準地縮小到幾乎為零，並推向深處 */
-        transform: translate(var(--tx), var(--ty)) translateZ(-500px) rotateY(0deg) scale(0.01); 
+        /* 增加強烈旋轉：rotate(720deg) 營造漩渦吸入感 */
+        transform: translate(var(--tx), var(--ty)) translateZ(-500px) rotateY(360deg) rotate(720deg) scale(0.01); 
     }
 }
 
