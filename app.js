@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- 核心變數與配置 ---
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxXLM6TK1hIeiwK1qghy2SqNjSOMbqh_6jR53Bj7inK7pCr1VFZcuEiVhw_EnkGzk4Q/exec';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbzBWXpjzWSt9I4zik7rnDCEbnSIH922PX-GYe8s64XkEdQynbHMJuFuyWaUoMEEbPbH/exec';
     let currentCount = 0;
     let batchData = [];
     let allAttendees = [];
