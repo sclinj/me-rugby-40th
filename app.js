@@ -705,39 +705,35 @@ function initNostalgicFlash() {
         'assets/albums/album_7.jpg'
     ];
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 6; i++) {
         setTimeout(() => {
             const particle = document.createElement('div');
             particle.className = 'memory-particle';
             
-            const startX = Math.random() * (window.innerWidth - 200);
-            const startY = Math.random() * (window.innerHeight - 150);
-            
-            particle.style.left = `${startX}px`;
-            particle.style.top = `${startY}px`;
             particle.style.backgroundImage = `url(${photos[i % photos.length]})`;
             
-            const tx = targetX - startX - 100;
-            const ty = targetY - startY - 75;
+            // 計算從螢幕中心到按鈕的相對偏移
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const tx = (targetX - centerX);
+            const ty = (targetY - centerY);
+            
             particle.style.setProperty('--tx', `${tx}px`);
             particle.style.setProperty('--ty', `${ty}px`);
             
             overlay.appendChild(particle);
 
-            // 執行閃現 (變慢)
-            particle.style.animation = 'flashIn 0.8s ease-out forwards';
+            // 執行 3D 旋轉與縮放動畫 (總長 2.5 秒)
+            particle.style.animation = 'carouselIn 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards';
             
-            // 閃現完後縮向按鈕 (變慢)
-            setTimeout(() => {
-                particle.style.animation = 'shrinkToButton 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards';
-            }, 1000);
-        }, i * 450); // 每 450ms 閃一張
+        }, i * 2200); // 每 2.2 秒才換下一張，確保一張一張呈現
     }
 
+    // 最後讓按鈕發光
     setTimeout(() => {
         targetBtn.classList.add('classic-btn-glow');
         setTimeout(() => {
             overlay.remove();
         }, 1500);
-    }, 4500);
+    }, 15000); 
 }
