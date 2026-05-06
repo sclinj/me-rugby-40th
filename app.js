@@ -683,7 +683,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const noHash = !window.location.hash || window.location.hash === '#home';
         
         if (isAtTop && noHash) {
-            initNostalgicFlash();
+            // 針對手機版增加啟動延遲，避開網頁載入時的 CPU 高峰 (iPhone 優化)
+            const delay = isMobile ? 800 : 100;
+            setTimeout(() => {
+                initNostalgicFlash();
+            }, delay);
         }
 
     } catch (e) {
