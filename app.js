@@ -728,9 +728,16 @@ function initNostalgicFlash() {
             
             overlay.appendChild(particle);
 
-            // 執行 3D 旋轉與縮放動畫 (總長 2.5 秒)
+            // 執行 3D 旋轉與縮放動畫 (總長 2.8 秒)
             particle.style.animation = 'carouselIn 2.8s cubic-bezier(0.4, 0, 0.2, 1) forwards';
             
+            // 在照片飛抵按鈕的瞬間 (2.5秒處)，讓按鈕跳動
+            setTimeout(() => {
+                targetBtn.classList.remove('btn-react');
+                void targetBtn.offsetWidth; // 強制重繪
+                targetBtn.classList.add('btn-react');
+            }, 2500);
+
         }, i * 2500); // 稍微加長間隔，讓大家看清文字
     }
 
