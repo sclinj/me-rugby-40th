@@ -698,19 +698,24 @@ function initNostalgicFlash() {
     const targetY = targetRect.top + targetRect.height / 2;
 
     const photos = [
-        'assets/albums/album_3.jpg',
-        'assets/albums/album_4.jpg',
-        'assets/albums/album_5.jpg',
-        'assets/albums/album_6.jpg',
-        'assets/albums/album_7.jpg'
+        { url: 'assets/albums/album_3.jpg', caption: '1992年 大機盃 @台大' },
+        { url: 'assets/albums/album_4.jpg', caption: '1992年 機械 vs 工管 (I)' },
+        { url: 'assets/albums/album_5.jpg', caption: '1992年 機械 vs 工管 (II)' },
+        { url: 'assets/albums/album_6.jpg', caption: '1993年 系際盃的泥濘' },
+        { url: 'assets/albums/album_7.jpg', caption: '1993年 vs 台大醫學' }
     ];
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < photos.length; i++) {
         setTimeout(() => {
             const particle = document.createElement('div');
             particle.className = 'memory-particle';
+            particle.style.backgroundImage = `url(${photos[i].url})`;
             
-            particle.style.backgroundImage = `url(${photos[i % photos.length]})`;
+            // 增加文字說明
+            const caption = document.createElement('div');
+            caption.className = 'memory-caption';
+            caption.innerText = photos[i].caption;
+            particle.appendChild(caption);
             
             // 計算從螢幕中心到按鈕的相對偏移
             const centerX = window.innerWidth / 2;
@@ -724,9 +729,9 @@ function initNostalgicFlash() {
             overlay.appendChild(particle);
 
             // 執行 3D 旋轉與縮放動畫 (總長 2.5 秒)
-            particle.style.animation = 'carouselIn 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+            particle.style.animation = 'carouselIn 2.8s cubic-bezier(0.4, 0, 0.2, 1) forwards';
             
-        }, i * 2200); // 每 2.2 秒才換下一張，確保一張一張呈現
+        }, i * 2500); // 稍微加長間隔，讓大家看清文字
     }
 
     // 最後讓按鈕發光
@@ -735,5 +740,5 @@ function initNostalgicFlash() {
         setTimeout(() => {
             overlay.remove();
         }, 1500);
-    }, 15000); 
+    }, photos.length * 2500 + 1000); 
 }
