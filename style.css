@@ -117,8 +117,8 @@ h1, h2, h3 {
     }
     100% { 
         opacity: 0; 
-        /* 強制執行位移：使用 var(--tx) 和 var(--ty) */
-        transform: translate(var(--tx), var(--ty)) translateZ(-200px) rotateY(0deg) scale(0.05); 
+        /* 更精準地縮小到幾乎為零，並推向深處 */
+        transform: translate(var(--tx), var(--ty)) translateZ(-500px) rotateY(0deg) scale(0.01); 
     }
 }
 

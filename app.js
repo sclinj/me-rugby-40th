@@ -717,9 +717,9 @@ function initNostalgicFlash() {
             caption.innerText = photos[i].caption;
             particle.appendChild(caption);
             
-            // 計算從螢幕中心到按鈕的相對偏移
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
+            // 加上微調，確保對準按鈕中心
             const tx = (targetX - centerX);
             const ty = (targetY - centerY);
             
