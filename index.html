@@ -420,97 +420,9 @@
                 </div>
             </div>
 
-            <!-- 細項執行進度 Dashboard -->
-            <div class="progress-grid">
-                <!-- Item 1 -->
-                <div class="progress-card">
-                    <div class="progress-header">
-                        <div class="progress-title-group">
-                            <div class="progress-icon">💰</div>
-                            <h4>募款進度</h4>
-                        </div>
-                        <span class="status-tag success">已達標</span>
-                    </div>
-                    <div class="progress-bar-outer">
-                        <div class="progress-bar-inner gradient-green" style="width: 100%;"></div>
-                    </div>
-                    <div class="progress-footer">
-                        <span>目前進度</span>
-                        <span class="progress-percent">100%</span>
-                    </div>
-                </div>
-
-                <!-- Item 2 -->
-                <div class="progress-card">
-                    <div class="progress-header">
-                        <div class="progress-title-group">
-                            <div class="progress-icon">🍽️</div>
-                            <h4>晚宴籌劃</h4>
-                        </div>
-                        <span class="status-tag warning">已訂位</span>
-                    </div>
-                    <div class="progress-bar-outer">
-                        <div class="progress-bar-inner gradient-blue" style="width: 70%;"></div>
-                    </div>
-                    <div class="progress-footer">
-                        <span>濃園 3F (20桌及舞台)</span>
-                        <span class="progress-percent">70%</span>
-                    </div>
-                </div>
-
-                <!-- Item 3 -->
-                <div class="progress-card">
-                    <div class="progress-header">
-                        <div class="progress-title-group">
-                            <div class="progress-icon">👕</div>
-                            <h4>紀念品製作</h4>
-                        </div>
-                        <span class="status-tag info">打樣中</span>
-                    </div>
-                    <div class="progress-bar-outer">
-                        <div class="progress-bar-inner gradient-gold" style="width: 40%;"></div>
-                    </div>
-                    <div class="progress-footer">
-                        <span>40 週年紀念衫設計</span>
-                        <span class="progress-percent">40%</span>
-                    </div>
-                </div>
-
-                <!-- Item 4 -->
-                <div class="progress-card">
-                    <div class="progress-header">
-                        <div class="progress-title-group">
-                            <div class="progress-icon">🏟️</div>
-                            <h4>球場休息區</h4>
-                        </div>
-                        <span class="status-tag info">規劃中</span>
-                    </div>
-                    <div class="progress-bar-outer">
-                        <div class="progress-bar-inner gradient-gold" style="width: 30%;"></div>
-                    </div>
-                    <div class="progress-footer">
-                        <span>帳篷、桌椅、補給品</span>
-                        <span class="progress-percent">30%</span>
-                    </div>
-                </div>
-
-                <!-- Item 5 -->
-                <div class="progress-card">
-                    <div class="progress-header">
-                        <div class="progress-title-group">
-                            <div class="progress-icon">📸</div>
-                            <h4>攝影及紀錄</h4>
-                        </div>
-                        <span class="status-tag success">已確認</span>
-                    </div>
-                    <div class="progress-bar-outer">
-                        <div class="progress-bar-inner gradient-blue" style="width: 60%;"></div>
-                    </div>
-                    <div class="progress-footer">
-                        <span>專業攝影義工團隊</span>
-                        <span class="progress-percent">60%</span>
-                    </div>
-                </div>
+            <!-- 細項執行進度 Dashboard (將由 JS 動態生成) -->
+            <div class="progress-grid" id="progress-grid">
+                <div class="loading-spinner">進度載入中...</div>
             </div>
             <!-- 級數排行榜 -->
             <div class="batch-stats-container">
@@ -531,10 +443,35 @@
             <button id="closeAdmin">&times;</button>
         </div>
         <div class="admin-body">
-            <div id="admin-items-list">
-                <!-- Dynamically generated -->
+            <div class="admin-auth-group">
+                <label>管理密碼</label>
+                <input type="password" id="adminPassword" placeholder="輸入密碼 (預設 ME40)">
             </div>
-            <button id="saveAdmin" class="btn btn-primary btn-block">儲存並發布</button>
+            <div id="admin-editor" class="admin-editor">
+                <div class="form-group">
+                    <label>選擇負責項目</label>
+                    <select id="adminSelectItem">
+                        <!-- 動態生成 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>負責人姓名</label>
+                    <input type="text" id="adminOwnerName" readonly>
+                </div>
+                <div class="form-group">
+                    <label>執行狀態 (如：已訂位、打樣中)</label>
+                    <input type="text" id="adminStatusText" placeholder="輸入目前狀態">
+                </div>
+                <div class="form-group">
+                    <label>具體進度說明</label>
+                    <textarea id="adminDescText" rows="3" placeholder="例如：已確認 20 桌名額與舞台佈置..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>進度百分比 (<span id="progressVal">0</span>%)</label>
+                    <input type="range" id="adminProgressRange" min="0" max="100" value="0">
+                </div>
+                <button id="saveAdmin" class="btn btn-primary btn-block">儲存並發布更新</button>
+            </div>
         </div>
     </div>
 

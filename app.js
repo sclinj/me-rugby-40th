@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- 核心變數與配置 ---
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbzBWXpjzWSt9I4zik7rnDCEbnSIH922PX-GYe8s64XkEdQynbHMJuFuyWaUoMEEbPbH/exec';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxzUMfCnjwzJjbowWtFuze-vjYCsK2MLxXYaz-J6lRCxaAgl8E2HRub6QSs-eBeIxg/exec';
     let currentCount = 0;
     let batchData = [];
     let allAttendees = [];
+    let progressItems = [];
 
     // --- 1. 初始化級數選單 ---
     function initGradYearSelects() {
@@ -107,17 +108,92 @@ document.addEventListener('DOMContentLoaded', () => {
             currentCount = data.total || 0;
             batchData = data.batchData || [];
             allAttendees = data.attendees || [];
+            progressItems = data.progressItems || getDefaultProgressItems();
             
             updateStatsUI();
             renderAttendeeList();
+            renderProgressGrid();
         } catch (error) {
             console.error('統計數據讀取失敗:', error);
+            progressItems = getDefaultProgressItems(); // 讀取失敗時使用預設值
+            renderProgressGrid();
             const errorEls = ['hero-count', 'reg-count'];
             errorEls.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.innerText = '--';
             });
         }
+    }
+
+    function getDefaultProgressItems() {
+        // 從 LocalStorage 嘗試讀取，若無則使用初始預設值
+        const saved = localStorage.getItem('rugby_progress_data');
+        if (saved) return JSON.parse(saved);
+
+        return [
+            { id: 1, name: '募款進度', owner: '澎哥', icon: '💰', status: '已達標', progress: 100, desc: '感謝校友慷慨解囊，募款已突破原定目標。', updatedAt: new Date().toISOString() },
+            { id: 2, name: '晚宴籌劃', owner: '澎哥', icon: '🍽️', status: '已訂位', progress: 70, desc: '已確認濃園 3F 場地，並完成舞台初步規劃。', updatedAt: new Date().toISOString() },
+            { id: 3, name: '紀念衫製作', owner: '豪哥', icon: '👕', status: '打樣中', progress: 40, desc: '40 週年紀念衫設計稿已定稿，進入打樣階段。', updatedAt: new Date().toISOString() },
+            { id: 4, name: '球場休息區', owner: '學成', icon: '🏟️', status: '規劃中', progress: 30, desc: '規劃帳篷租借與當日補給品清單。', updatedAt: new Date().toISOString() },
+            { id: 5, name: '攝影及記錄', owner: '晃民', icon: '📸', status: '已確認', progress: 60, desc: '專業攝影團隊與空拍義工已完成分工。', updatedAt: new Date().toISOString() },
+            { id: 6, name: '40周年紀念鑰匙圈', owner: '學成', icon: '🔑', status: '新增項目', progress: 10, desc: '新增紀念品項目，正進行設計方案篩選。', updatedAt: new Date().toISOString() }
+        ];
+    }
+
+    function renderProgressGrid() {
+        const grid = document.getElementById('progress-grid');
+        if (!grid) return;
+
+        grid.innerHTML = progressItems.map(item => {
+            const isNew = isRecentlyUpdated(item.updatedAt);
+            const gradientClass = getGradient(item.progress);
+            
+            return `
+                <div class="progress-card reveal">
+                    ${isNew ? '<div class="new-badge">NEW</div>' : ''}
+                    <div class="progress-header">
+                        <div class="progress-title-group">
+                            <div class="progress-icon">${item.icon}</div>
+                            <h4>${item.name}</h4>
+                        </div>
+                        <span class="status-tag ${getStatusClass(item.status)}">${item.status}</span>
+                    </div>
+                    <div class="progress-bar-outer">
+                        <div class="progress-bar-inner ${gradientClass}" style="width: ${item.progress}%"></div>
+                    </div>
+                    <div class="progress-footer">
+                        <span>目前進度</span>
+                        <span class="progress-percent">${item.progress}%</span>
+                    </div>
+                    ${item.desc ? `<div class="update-desc">${item.desc}</div>` : ''}
+                    <div class="owner-tag">${item.owner}</div>
+                </div>
+            `;
+        }).join('');
+
+        // 重新初始化 reveal 效果
+        initReveal();
+    }
+
+    function isRecentlyUpdated(dateStr) {
+        if (!dateStr) return false;
+        const updateDate = new Date(dateStr);
+        const now = new Date();
+        const diffInHours = (now - updateDate) / (1000 * 60 * 60);
+        return diffInHours < 72; // 3 天內算新更新
+    }
+
+    function getGradient(progress) {
+        if (progress >= 100) return 'gradient-green';
+        if (progress >= 70) return 'gradient-blue';
+        if (progress >= 40) return 'gradient-gold';
+        return 'gradient-red';
+    }
+
+    function getStatusClass(status) {
+        if (status.includes('已達標') || status.includes('已確認') || status.includes('完成')) return 'success';
+        if (status.includes('規劃') || status.includes('新增')) return 'info';
+        return 'warning';
     }
 
     function updateStatsUI() {
@@ -335,67 +411,103 @@ document.addEventListener('DOMContentLoaded', () => {
         const panel = document.getElementById('adminPanel');
         const closeBtn = document.getElementById('closeAdmin');
         const saveBtn = document.getElementById('saveAdmin');
-        const listContainer = document.getElementById('admin-items-list');
+        const passwordInput = document.getElementById('adminPassword');
+        const selectItem = document.getElementById('adminSelectItem');
+        const ownerInput = document.getElementById('adminOwnerName');
+        const statusInput = document.getElementById('adminStatusText');
+        const descInput = document.getElementById('adminDescText');
+        const progressRange = document.getElementById('adminProgressRange');
+        const progressVal = document.getElementById('progressVal');
 
         if (!trigger || !panel) return;
 
-        const defaultItems = [
-            { id: 1, name: '募款進度', status: '已達標', progress: 100 },
-            { id: 2, name: '晚宴籌劃', status: '已訂位', progress: 70 },
-            { id: 3, name: '紀念品製作', status: '打樣中', progress: 40 },
-            { id: 4, name: '球場休息區', status: '規劃中', progress: 30 },
-            { id: 5, name: '攝影及紀錄', status: '已確認', progress: 60 }
-        ];
-
-        let items = JSON.parse(localStorage.getItem('rugby_progress_data')) || defaultItems;
-
-        const syncUI = () => {
-            const uiItems = document.querySelectorAll('.progress-card');
-            items.forEach((item, i) => {
-                if (uiItems[i]) {
-                    const tag = uiItems[i].querySelector('.status-tag');
-                    const bar = uiItems[i].querySelector('.progress-bar-inner');
-                    const percent = uiItems[i].querySelector('.progress-percent');
-                    if (tag) tag.innerText = item.status;
-                    if (bar) bar.style.width = item.progress + '%';
-                    if (percent) percent.innerText = item.progress + '%';
-                }
-            });
-        };
-
-        syncUI();
-
+        // 當點擊管理觸發點時
         trigger.addEventListener('click', () => {
             panel.style.display = 'block';
-            if (listContainer) {
-                listContainer.innerHTML = items.map(item => `
-                    <div class="admin-item-edit">
-                        <label>${item.name}</label>
-                        <input type="text" value="${item.status}" class="status-input">
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <input type="range" min="0" max="100" value="${item.progress}" class="ps">
-                            <span>${item.progress}%</span>
-                        </div>
-                    </div>
-                `).join('');
-                listContainer.querySelectorAll('.ps').forEach(s => {
-                    s.addEventListener('input', e => e.target.nextElementSibling.innerText = e.target.value + '%');
-                });
-            }
+            // 初始化下拉選單
+            selectItem.innerHTML = progressItems.map(item => `
+                <option value="${item.id}">${item.name}</option>
+            `).join('');
+            
+            // 觸發一次更新顯示
+            updateEditorFields();
         });
 
+        // 下拉選單變動時更新欄位
+        selectItem.addEventListener('change', updateEditorFields);
+
+        // 滑桿變動時更新數字顯示
+        progressRange.addEventListener('input', () => {
+            progressVal.innerText = progressRange.value;
+        });
+
+        function updateEditorFields() {
+            const selectedId = parseInt(selectItem.value);
+            const item = progressItems.find(i => i.id === selectedId);
+            if (item) {
+                ownerInput.value = item.owner;
+                statusInput.value = item.status;
+                descInput.value = item.desc || '';
+                progressRange.value = item.progress;
+                progressVal.innerText = item.progress;
+            }
+        }
+
         if (closeBtn) closeBtn.addEventListener('click', () => panel.style.display = 'none');
+
         if (saveBtn) {
-            saveBtn.addEventListener('click', () => {
-                const edits = panel.querySelectorAll('.admin-item-edit');
-                edits.forEach((edit, i) => {
-                    items[i].status = edit.querySelector('.status-input').value;
-                    items[i].progress = parseInt(edit.querySelector('.ps').value);
-                });
-                localStorage.setItem('rugby_progress_data', JSON.stringify(items));
-                syncUI();
-                alert('已儲存！');
-                panel.style.display = 'none';
+            saveBtn.addEventListener('click', async () => {
+                if (passwordInput.value !== 'ME40') {
+                    alert('密碼錯誤！');
+                    return;
+                }
+
+                const selectedId = parseInt(selectItem.value);
+                const itemIndex = progressItems.findIndex(i => i.id === selectedId);
+                
+                if (itemIndex > -1) {
+                    const originalText = saveBtn.innerText;
+                    saveBtn.innerText = '正在發布更新...';
+                    saveBtn.disabled = true;
+
+                    // 更新本地資料對象
+                    progressItems[itemIndex].status = statusInput.value;
+                    progressItems[itemIndex].desc = descInput.value;
+                    progressItems[itemIndex].progress = parseInt(progressRange.value);
+                    progressItems[itemIndex].updatedAt = new Date().toISOString();
+
+                    try {
+                        // 嘗試發送到 GAS 後台
+                        const updateData = {
+                            action: 'updateProgress',
+                            itemId: selectedId,
+                            status: progressItems[itemIndex].status,
+                            desc: progressItems[itemIndex].desc,
+                            progress: progressItems[itemIndex].progress,
+                            updatedAt: progressItems[itemIndex].updatedAt
+                        };
+
+                        await fetch(GAS_URL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            body: JSON.stringify(updateData)
+                        });
+
+                        // 同步儲存至 localStorage 作為備援
+                        localStorage.setItem('rugby_progress_data', JSON.stringify(progressItems));
+                        
+                        renderProgressGrid();
+                        alert('更新成功！所有訪客將在下次重新整理後看到新進度。');
+                        panel.style.display = 'none';
+                        passwordInput.value = '';
+                    } catch (error) {
+                        console.error('更新失敗:', error);
+                        alert('發布失敗，請檢查網路連線或聯繫管理員。');
+                    } finally {
+                        saveBtn.innerText = originalText;
+                        saveBtn.disabled = false;
+                    }
+                }
             });
         }
     }

@@ -841,6 +841,98 @@ h1, h2, h3 {
     font-weight: 800;
 }
 
+.owner-tag {
+    font-size: 0.75rem;
+    color: var(--navy-blue);
+    opacity: 0.6;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+}
+
+.owner-tag::before {
+    content: '👤 負責人:';
+    font-weight: 700;
+}
+
+.update-desc {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: #444;
+    line-height: 1.5;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    border-radius: 8px;
+    border-left: 3px solid var(--gold);
+}
+
+.new-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #ff4757;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(255, 71, 87, 0.4);
+    animation: bounce 2s infinite;
+    z-index: 5;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Admin Panel Refinements */
+.admin-auth-group {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed rgba(0,0,0,0.1);
+}
+
+.admin-auth-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin-top: 8px;
+}
+
+.admin-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.admin-editor label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--navy-blue);
+    margin-bottom: 5px;
+    display: block;
+}
+
+.admin-editor input, .admin-editor select, .admin-editor textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.admin-editor textarea {
+    resize: vertical;
+}
+
+input[type="range"] {
+    cursor: pointer;
+}
+
 /* Attendees List Styles */
 .filter-controls {
     display: flex;
