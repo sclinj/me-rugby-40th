@@ -231,6 +231,14 @@ document.addEventListener('DOMContentLoaded', () => {
         animate('hero-count', currentCount);
         animate('reg-count', currentCount);
 
+        // 更新募款金額 (從 ID 為 1 的項目獲取)
+        const fundItem = progressItems.find(i => i.id === 1);
+        const fundAmountEl = document.getElementById('fund-amount');
+        if (fundItem && fundAmountEl) {
+            const amount = parseInt(fundItem.amount) || 0;
+            fundAmountEl.innerText = `NT$ ${amount.toLocaleString()}`;
+        }
+
         const batchBarsEl = document.getElementById('batch-bars');
         const leadingBatchEl = document.getElementById('leading-batch');
         if (batchBarsEl && batchData.length > 0) {
@@ -432,6 +440,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectItem = document.getElementById('adminSelectItem');
         const ownerInput = document.getElementById('adminOwnerName');
         const statusInput = document.getElementById('adminStatusText');
+        const amountGroup = document.getElementById('adminAmountGroup');
+        const amountInput = document.getElementById('adminAmountInput');
         const descInput = document.getElementById('adminDescText');
         const progressRange = document.getElementById('adminProgressRange');
         const progressVal = document.getElementById('progressVal');
@@ -467,6 +477,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 descInput.value = item.desc || '';
                 progressRange.value = item.progress;
                 progressVal.innerText = item.progress;
+
+                // 如果選擇的是募款項目 (ID 1)，則顯示金額輸入框
+                if (selectedId === 1) {
+                    amountGroup.style.display = 'block';
+                    amountInput.value = item.amount || 0;
+                } else {
+                    amountGroup.style.display = 'none';
+                }
             }
         }
 
@@ -492,6 +510,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     progressItems[itemIndex].desc = descInput.value;
                     progressItems[itemIndex].progress = parseInt(progressRange.value);
                     progressItems[itemIndex].updatedAt = new Date().toISOString();
+                    if (selectedId === 1) {
+                        progressItems[itemIndex].amount = parseInt(amountInput.value) || 0;
+                    }
 
                     try {
                         // 嘗試發送到 GAS 後台
@@ -501,7 +522,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             status: progressItems[itemIndex].status,
                             desc: progressItems[itemIndex].desc,
                             progress: progressItems[itemIndex].progress,
-                            updatedAt: progressItems[itemIndex].updatedAt
+                            updatedAt: progressItems[itemIndex].updatedAt,
+                            amount: progressItems[itemIndex].amount || 0 // 新增：金額
                         };
 
                         await fetch(GAS_URL, {

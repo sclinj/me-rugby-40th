@@ -415,7 +415,7 @@
                     <div class="stat-label">OB 報名人數</div>
                 </div>
                 <div class="stat-card highlight-card">
-                    <div class="stat-value">NT$ 321,000</div>
+                    <div class="stat-value" id="fund-amount">NT$ 321,000</div>
                     <div class="stat-label">募款金額 (已達標)</div>
                 </div>
             </div>
@@ -461,6 +461,10 @@
                 <div class="form-group">
                     <label>執行狀態 (如：已訂位、打樣中)</label>
                     <input type="text" id="adminStatusText" placeholder="輸入目前狀態">
+                </div>
+                <div class="form-group" id="adminAmountGroup" style="display: none;">
+                    <label>募款總金額 (請輸入純數字)</label>
+                    <input type="number" id="adminAmountInput" placeholder="例如：321000">
                 </div>
                 <div class="form-group">
                     <label>具體進度說明</label>
