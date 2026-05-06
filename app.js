@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let batchData = [];
     let allAttendees = [];
     let progressItems = [];
+    let isEditMode = false;
+    let editingPerson = null;
 
     // --- 1. 初始化級數選單 ---
     function initGradYearSelects() {
@@ -22,6 +24,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+
+        // 同步填充查詢 Modal 的級數選單
+        const lookupSelect = document.getElementById('lookupGradYear');
+        if (lookupSelect) {
+            while (lookupSelect.options.length > 1) lookupSelect.remove(1);
+            for (let i = 115; i >= 75; i--) {
+                const option = document.createElement('option');
+                option.value = i + '級';
+                option.textContent = i + '級';
+                lookupSelect.appendChild(option);
+            }
+        }
     }
 
     // --- 2. 報名表單邏輯 ---
@@ -71,6 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         dietGuest: formData.get('dietGuest') || '葷'
                     };
 
+                    // 如果是編輯模式，加入 action 與原本的標識資訊
+                    if (isEditMode && editingPerson) {
+                        data.action = 'updateRegistration';
+                        data.oldName = editingPerson.name;
+                        data.oldGradYear = editingPerson.gradYear;
+                        submitBtn.innerText = '正在儲存修改...';
+                    }
+
                     await fetch(GAS_URL, {
                         method: 'POST',
                         mode: 'no-cors',
@@ -86,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         submitBtn.style.background = '';
                         submitBtn.disabled = false;
                         fetchStats();
+                        if (isEditMode) exitEditMode();
                     }, 1500);
                 } catch (error) {
                     console.error('提交失敗:', error);
@@ -650,6 +673,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initExternalLinks();
         initReveal();
         initLineSharing();
+        initLookupSystem();
         
         // 綁定出席名單即時搜尋事件
         const sn = document.getElementById('searchName');
@@ -694,6 +718,139 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (e) {
         console.error('初始化過程中發生錯誤:', e);
+    }
+
+    // --- 8. 報名查詢與修改系統 (移入作用域內以存取局部變數) ---
+    function initLookupSystem() {
+        const modal = document.getElementById('lookupModal');
+        const openBtn = document.getElementById('lookupBtn');
+        const closeBtn = document.getElementById('closeLookup');
+        const performBtn = document.getElementById('performLookupBtn');
+        const backBtn = document.getElementById('backToSearch');
+        const retryBtn = document.getElementById('retryLookup');
+        const confirmEditBtn = document.getElementById('confirmEditBtn');
+        const cancelEditBtn = document.getElementById('cancelEdit');
+
+        const searchSection = document.getElementById('lookupSearchSection');
+        const resultSection = document.getElementById('lookupResultSection');
+        const errorSection = document.getElementById('lookupErrorSection');
+
+        if (!modal || !openBtn) return;
+
+        // 開關 Modal
+        openBtn.onclick = () => {
+            modal.style.display = 'block';
+            resetLookupUI();
+        };
+        closeBtn.onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; };
+
+        function resetLookupUI() {
+            searchSection.classList.remove('hidden');
+            resultSection.classList.add('hidden');
+            errorSection.classList.add('hidden');
+            document.getElementById('lookupName').value = '';
+            document.getElementById('lookupGradYear').value = '';
+        }
+
+        // 執行查詢
+        performBtn.onclick = () => {
+            const name = document.getElementById('lookupName').value.trim();
+            const gradYear = document.getElementById('lookupGradYear').value;
+
+            if (!name || !gradYear) {
+                alert('請填寫姓名與級數');
+                return;
+            }
+
+            // 比對全域 (局部 scope) allAttendees
+            const person = allAttendees.find(p => 
+                p.name === name && p.gradYear === gradYear
+            );
+
+            searchSection.classList.add('hidden');
+            if (person) {
+                showLookupResult(person);
+            } else {
+                errorSection.classList.remove('hidden');
+            }
+        };
+
+        function showLookupResult(person) {
+            document.getElementById('resultName').innerText = person.name;
+            document.getElementById('resultGradYear').innerText = person.gradYear;
+            document.getElementById('resultAttend').innerText = person.attend || '未知';
+            document.getElementById('resultGuests').innerText = person.guests || '0';
+            document.getElementById('resultDiet').innerText = `本人: ${person.dietSelf || '葷'} / 眷屬: ${person.dietGuest || '無'}`;
+            
+            resultSection.classList.remove('hidden');
+            
+            // 綁定確認修改按鈕
+            confirmEditBtn.onclick = () => {
+                startEditMode(person);
+                modal.style.display = 'none';
+            };
+        }
+
+        backBtn.onclick = resetLookupUI;
+        retryBtn.onclick = resetLookupUI;
+
+        // 編輯模式處理
+        function startEditMode(person) {
+            isEditMode = true;
+            editingPerson = person;
+
+            // 捲動至表單
+            const regSection = document.getElementById('registration');
+            regSection.scrollIntoView({ behavior: 'smooth' });
+
+            // 填充資料
+            document.getElementById('name').value = person.name;
+            document.getElementById('gradYear').value = person.gradYear;
+            
+            const attendCheck = document.getElementById('attendBanquet');
+            attendCheck.checked = (person.attend === '是');
+            // 手動觸發變動事件以顯示晚宴細節
+            attendCheck.dispatchEvent(new Event('change'));
+
+            document.getElementById('guests').value = person.guests || '0';
+            document.getElementById('guests').dispatchEvent(new Event('change'));
+
+            // 處理 Radio Buttons (本人飲食)
+            const dietSelfRadios = document.getElementsByName('dietSelf');
+            dietSelfRadios.forEach(r => {
+                if (r.value === person.dietSelf) r.checked = true;
+            });
+
+            // 處理 Radio Buttons (眷屬飲食)
+            const dietGuestRadios = document.getElementsByName('dietGuest');
+            dietGuestRadios.forEach(r => {
+                if (r.value === person.dietGuest) r.checked = true;
+            });
+
+            // 顯示 Banner 與更改按鈕文字
+            document.getElementById('editModeBanner').classList.remove('hidden');
+            document.getElementById('editModeText').innerText = `正在編輯 ${person.name} (${person.gradYear}) 的報名資料...`;
+            
+            const submitBtn = document.querySelector('#regForm button[type="submit"]');
+            submitBtn.innerText = '確認修改資料';
+            submitBtn.classList.add('btn-gold');
+        }
+
+        cancelEditBtn.onclick = exitEditMode;
+    }
+
+    function exitEditMode() {
+        isEditMode = false;
+        editingPerson = null;
+        
+        document.getElementById('regForm').reset();
+        document.getElementById('editModeBanner').classList.add('hidden');
+        document.getElementById('banquetDetails').style.display = 'none';
+        
+        const submitBtn = document.querySelector('#regForm button[type="submit"]');
+        submitBtn.innerText = '提交報名資料';
+        submitBtn.classList.remove('btn-gold');
     }
 });
 

@@ -304,8 +304,18 @@
     <!-- Registration Section -->
     <section id="registration" class="section">
         <div class="container">
-            <h2 class="section-title">OB 報名系統</h2>
+            <div class="section-header-with-action">
+                <h2 class="section-title">OB 報名系統</h2>
+                <button id="lookupBtn" class="btn-lookup-trigger">🔍 查詢/修改我的報名</button>
+            </div>
             <div class="form-card">
+                <div id="editModeBanner" class="edit-mode-banner hidden">
+                    <div class="banner-content">
+                        <span class="banner-icon">📝</span>
+                        <span id="editModeText">正在編輯您的報名資料...</span>
+                        <button id="cancelEdit" class="btn-cancel-edit">取消修改</button>
+                    </div>
+                </div>
                 <form id="regForm">
                     <div class="form-grid">
                         <div class="form-group">
@@ -504,6 +514,73 @@
             <p>&copy; 2026 成大機械橄欖球隊 40 週年籌備委員會. All Rights Reserved.</p>
         </div>
     </footer>
+
+    <!-- Registration Lookup Modal -->
+    <div id="lookupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>查詢報名資料</h3>
+                <button id="closeLookup" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="lookupSearchSection">
+                    <p>請輸入報名時的姓名與級數進行核對</p>
+                    <div class="lookup-form">
+                        <div class="form-group">
+                            <label>姓名</label>
+                            <input type="text" id="lookupName" placeholder="請輸入姓名">
+                        </div>
+                        <div class="form-group">
+                            <label>級數</label>
+                            <select id="lookupGradYear">
+                                <option value="">請選擇級數</option>
+                                <!-- JS 動態填充 -->
+                            </select>
+                        </div>
+                        <button id="performLookupBtn" class="btn btn-primary btn-block">開始查詢</button>
+                    </div>
+                </div>
+                
+                <div id="lookupResultSection" class="hidden">
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-user-info">
+                                <h4 id="resultName">--</h4>
+                                <span id="resultGradYear">--</span>
+                            </div>
+                            <div class="result-status-badge success">已完成報名</div>
+                        </div>
+                        <div class="result-details">
+                            <div class="detail-item">
+                                <span class="detail-label">晚宴行程</span>
+                                <span class="detail-value" id="resultAttend">--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">攜伴人數</span>
+                                <span class="detail-value" id="resultGuests">--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">飲食習慣</span>
+                                <span class="detail-value" id="resultDiet">--</span>
+                            </div>
+                        </div>
+                        <div class="result-actions">
+                            <button id="confirmEditBtn" class="btn btn-gold btn-block">📝 修改這筆資料</button>
+                            <button id="backToSearch" class="btn-text">重新查詢</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="lookupErrorSection" class="hidden">
+                    <div class="error-msg">
+                        <span class="error-icon">⚠️</span>
+                        <p>找不到符合的報名紀錄，請確認姓名與級數是否正確。</p>
+                        <button id="retryLookup" class="btn-text">再試一次</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>
