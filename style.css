@@ -82,7 +82,7 @@ h1, h2, h3 {
     will-change: transform, opacity; /* 強制啟動 GPU 加速 */
 }
 
-/* 手機版：恢復旋轉並強化 GPU 加速 */
+/* 手機版：移除高耗能 3D，改用流暢 2D 漩渦 */
 @media (max-width: 768px) {
     .memory-particle {
         width: 200px;
@@ -90,20 +90,20 @@ h1, h2, h3 {
         margin-left: -100px;
         margin-top: -75px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        /* 強制 3D 渲染層 */
-        backface-visibility: hidden;
-        perspective: 1000px;
+        /* 移除 transform-style: preserve-3d 以提升手機順暢度 */
+        transform-style: flat;
+        will-change: transform, opacity;
     }
     .memory-caption {
         font-size: 0.85rem;
         padding: 8px;
     }
-    /* 修正：將旋轉效果加回關鍵影格，並使用 translate3d */
+    /* 手機版專用：純 2D 漩渦吸入動畫 */
     @keyframes carouselIn {
-        0% { opacity: 0; transform: translate3d(-100px, 0, -400px) rotateY(-60deg); }
-        30% { opacity: 1; transform: translate3d(0, 0, 100px) rotateY(0deg) scale(1.1); }
-        70% { opacity: 1; transform: translate3d(0, 0, 100px) rotateY(0deg) scale(1); }
-        100% { opacity: 0; transform: translate3d(var(--tx), var(--ty), -300px) rotate(360deg) scale(0.01); }
+        0% { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+        30% { opacity: 1; transform: scale(1.1) rotate(0deg); }
+        70% { opacity: 1; transform: scale(1) rotate(0deg); }
+        100% { opacity: 0; transform: translate(var(--tx), var(--ty)) rotate(360deg) scale(0.01); }
     }
 }
 

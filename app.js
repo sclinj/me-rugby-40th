@@ -692,6 +692,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initNostalgicFlash() {
+    // 徹底清除可能存在的殘留
+    const existing = document.querySelector('.memory-flash-overlay');
+    if (existing) existing.remove();
+
     const overlay = document.createElement('div');
     overlay.className = 'memory-flash-overlay';
     document.body.appendChild(overlay);
@@ -712,7 +716,7 @@ function initNostalgicFlash() {
     ];
 
     const isMobile = window.innerWidth <= 768;
-    const displayPhotos = isMobile ? photos.slice(0, 3) : photos; // 手機版只播前 3 張
+    const displayPhotos = isMobile ? photos.slice(0, 2) : photos; // 手機版減少至 2 張，確保順暢
 
     for (let i = 0; i < displayPhotos.length; i++) {
         setTimeout(() => {
