@@ -117,11 +117,15 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('統計數據讀取失敗:', error);
             progressItems = getDefaultProgressItems(); // 讀取失敗時使用預設值
             renderProgressGrid();
-            const errorEls = ['hero-count', 'reg-count'];
+            const errorEls = ['hero-count', 'reg-count', 'leading-batch'];
             errorEls.forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.innerText = '--';
+                if (el) el.innerText = '連線中';
             });
+            const batchBarsEl = document.getElementById('batch-bars');
+            if (batchBarsEl) {
+                batchBarsEl.innerHTML = '<div class="info-msg">暫時無法讀取排行榜資料，請稍後再試</div>';
+            }
         }
     }
 
