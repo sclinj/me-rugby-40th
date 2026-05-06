@@ -698,75 +698,55 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initNostalgicFlash() {
-    // 徹底清除可能存在的殘留
-    const existing = document.querySelector('.memory-flash-overlay');
-    if (existing) existing.remove();
+    const overlay = document.getElementById('memory-flash-overlay');
+    const targetBtn = document.querySelector('.hero-btns .btn-secondary');
+    if (!overlay || !targetBtn) return;
 
-    const overlay = document.createElement('div');
-    overlay.className = 'memory-flash-overlay';
-    document.body.appendChild(overlay);
-
-    const targetBtn = document.querySelector('.hero-btns .btn-secondary'); // 修正：指向重溫經典按鈕
-    if (!targetBtn) return;
+    overlay.style.display = 'block';
 
     const targetRect = targetBtn.getBoundingClientRect();
     const targetX = targetRect.left + targetRect.width / 2;
     const targetY = targetRect.top + targetRect.height / 2;
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    const tx = (targetX - centerX);
+    const ty = (targetY - centerY);
 
-    const photos = [
-        { url: 'assets/albums/album_3.jpg', caption: '1992年 大機盃 @台大' },
-        { url: 'assets/albums/album_4.jpg', caption: '1992年 機械 vs 工管 (I)' },
-        { url: 'assets/albums/album_5.jpg', caption: '1992年 機械 vs 工管 (II)' },
-        { url: 'assets/albums/album_6.jpg', caption: '1993年 系際盃的泥濘' },
-        { url: 'assets/albums/album_7.jpg', caption: '1993年 vs 台大醫學' }
-    ];
-
+    const particles = overlay.querySelectorAll('.memory-particle');
     const isMobile = window.innerWidth <= 768;
-    const displayPhotos = isMobile ? photos.slice(0, 2) : photos; // 手機版減少至 2 張，確保順暢
 
-    for (let i = 0; i < displayPhotos.length; i++) {
+    particles.forEach((particle, i) => {
+        // 手機版只播前兩張 (p1, p2)
+        if (isMobile && i >= 2) {
+            particle.style.display = 'none';
+            return;
+        }
+
         setTimeout(() => {
-            const particle = document.createElement('div');
-            particle.className = 'memory-particle';
-            
-            // 使用 img 標籤代替 background-image，並加上隨機參數破除快取
-            const img = document.createElement('img');
-            img.src = `${displayPhotos[i].url}?t=${Date.now()}`;
-            img.loading = 'eager'; // 強制立即解碼
-            particle.appendChild(img);
-            
-            const caption = document.createElement('div');
-            caption.className = 'memory-caption';
-            caption.innerText = displayPhotos[i].caption;
-            particle.appendChild(caption);
-            
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-            const tx = (targetX - centerX);
-            const ty = (targetY - centerY);
-            
             particle.style.setProperty('--tx', `${tx}px`);
             particle.style.setProperty('--ty', `${ty}px`);
-            overlay.appendChild(particle);
-
+            
+            // 啟動動畫
             particle.style.animation = 'carouselIn 2.8s cubic-bezier(0.4, 0, 0.2, 1) forwards';
             
+            // 按鈕聯動
             setTimeout(() => {
                 targetBtn.classList.remove('btn-react');
                 void targetBtn.offsetWidth; 
                 targetBtn.classList.add('btn-react');
-                
-                // 修正：手動移除已完成的個體
-                setTimeout(() => particle.remove(), 500);
             }, 2500);
-        }, i * 2500);
-    }
 
+        }, i * 2500);
+    });
+
+    // 結束清理
+    const totalTime = (isMobile ? 2 : 3) * 2500 + 1000;
     setTimeout(() => {
         targetBtn.classList.add('classic-btn-glow');
         setTimeout(() => {
-            overlay.innerHTML = ''; // 徹底清空
-            overlay.remove();
+            overlay.style.display = 'none';
+            // 清除所有 particle 的動畫狀態以便下次刷新
+            particles.forEach(p => p.style.animation = '');
         }, 1500);
-    }, displayPhotos.length * 2500 + 1000); 
+    }, totalTime);
 }

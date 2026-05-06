@@ -25,6 +25,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- 記憶縮時動畫靜態層 (優化效能) -->
+    <div id="memory-flash-overlay" class="memory-flash-overlay" style="display: none;">
+        <div class="memory-particle" id="memory-p1">
+            <img src="assets/albums/album_3.jpg" loading="eager">
+            <div class="memory-caption">1992年 大機盃 @台大</div>
+        </div>
+        <div class="memory-particle" id="memory-p2">
+            <img src="assets/albums/album_4.jpg" loading="eager">
+            <div class="memory-caption">1992年 機械 vs 工管 (I)</div>
+        </div>
+        <!-- 電腦版額外照片 -->
+        <div class="memory-particle desktop-only" id="memory-p3">
+            <img src="assets/albums/album_6.jpg" loading="eager">
+            <div class="memory-caption">1993年 系際盃的泥濘</div>
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav class="glass-nav">
         <div class="container">

@@ -50,7 +50,6 @@ h1, h2, h3 {
     transform: translateY(0);
 }
 
-/* 3D 記憶旋轉動畫 */
 .memory-flash-overlay {
     position: fixed;
     top: 0;
@@ -60,7 +59,17 @@ h1, h2, h3 {
     z-index: 9999;
     pointer-events: none;
     overflow: hidden;
-    perspective: 1200px; /* 增加 3D 透視感 */
+    perspective: 1200px;
+}
+
+.desktop-only {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none !important;
+    }
 }
 
 .memory-particle {
