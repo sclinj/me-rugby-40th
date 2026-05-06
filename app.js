@@ -678,11 +678,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // --- 記憶縮時動畫 (Nostalgic Flash) ---
-        // 修正：只有在首頁頂端 (無錨點或在最上方) 時才啟動
+        // 修正：只有在首頁頂端時啟動。允許無錨點、#home 或 #history
         const isAtTop = window.scrollY < 100;
-        const noHash = !window.location.hash || window.location.hash === '#home';
+        const currentHash = window.location.hash;
+        const isValidPage = !currentHash || currentHash === '#home' || currentHash === '#history';
         
-        if (isAtTop && noHash) {
+        if (isAtTop && isValidPage) {
             const isMobile = window.innerWidth <= 768;
             // 針對手機版增加啟動延遲，避開網頁載入時的 CPU 高峰 (iPhone 優化)
             const delay = isMobile ? 800 : 100;
