@@ -536,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             desc: progressItems[itemIndex].desc,
                             progress: progressItems[itemIndex].progress,
                             updatedAt: progressItems[itemIndex].updatedAt,
-                            amount: progressItems[itemIndex].amount || 0 // 新增：金額
+                            amount: Number(progressItems[itemIndex].amount || 0) // 強制轉為數字
                         };
 
                         await fetch(GAS_URL, {
