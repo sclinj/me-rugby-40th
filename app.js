@@ -164,13 +164,14 @@ document.addEventListener('DOMContentLoaded', () => {
         grid.innerHTML = progressItems.map(item => {
             const isNew = isRecentlyUpdated(item.updatedAt);
             const gradientClass = getGradient(item.progress);
+            const icon = item.icon || getIconById(item.id);
             
             return `
                 <div class="progress-card reveal">
                     ${isNew ? '<div class="new-badge">NEW</div>' : ''}
                     <div class="progress-header">
                         <div class="progress-title-group">
-                            <div class="progress-icon">${item.icon}</div>
+                            <div class="progress-icon">${icon}</div>
                             <h4>${item.name}</h4>
                         </div>
                         <span class="status-tag ${getStatusClass(item.status)}">${item.status}</span>
@@ -190,6 +191,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 重新初始化 reveal 效果
         initReveal();
+    }
+
+    function getIconById(id) {
+        const icons = {
+            1: '💰',
+            2: '🍽️',
+            3: '👕',
+            4: '🏟️',
+            5: '📸',
+            6: '🔑'
+        };
+        return icons[id] || '📋';
     }
 
     function isRecentlyUpdated(dateStr) {
