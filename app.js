@@ -678,7 +678,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // --- 記憶縮時動畫 (Nostalgic Flash) ---
-        initNostalgicFlash();
+        // 修正：只有在首頁頂端 (無錨點或在最上方) 時才啟動
+        const isAtTop = window.scrollY < 100;
+        const noHash = !window.location.hash || window.location.hash === '#home';
+        
+        if (isAtTop && noHash) {
+            initNostalgicFlash();
+        }
 
     } catch (e) {
         console.error('初始化過程中發生錯誤:', e);
