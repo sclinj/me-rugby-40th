@@ -676,7 +676,65 @@ document.addEventListener('DOMContentLoaded', () => {
                 scrollToAttendees(batchText);
             });
         }
+
+        // --- 記憶縮時動畫 (Nostalgic Flash) ---
+        initNostalgicFlash();
+
     } catch (e) {
         console.error('初始化過程中發生錯誤:', e);
     }
 });
+
+function initNostalgicFlash() {
+    const overlay = document.createElement('div');
+    overlay.className = 'memory-flash-overlay';
+    document.body.appendChild(overlay);
+
+    const targetBtn = document.querySelector('.hero-btns .btn-outline'); 
+    if (!targetBtn) return;
+
+    const targetRect = targetBtn.getBoundingClientRect();
+    const targetX = targetRect.left + targetRect.width / 2;
+    const targetY = targetRect.top + targetRect.height / 2;
+
+    const photos = [
+        'assets/albums/album_3.jpg',
+        'assets/albums/album_4.jpg',
+        'assets/albums/album_5.jpg',
+        'assets/albums/album_6.jpg',
+        'assets/albums/album_7.jpg'
+    ];
+
+    for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+            const particle = document.createElement('div');
+            particle.className = 'memory-particle';
+            
+            const startX = Math.random() * (window.innerWidth - 200);
+            const startY = Math.random() * (window.innerHeight - 150);
+            
+            particle.style.left = `${startX}px`;
+            particle.style.top = `${startY}px`;
+            particle.style.backgroundImage = `url(${photos[i % photos.length]})`;
+            
+            const tx = targetX - startX - 100;
+            const ty = targetY - startY - 75;
+            particle.style.setProperty('--tx', `${tx}px`);
+            particle.style.setProperty('--ty', `${ty}px`);
+            
+            overlay.appendChild(particle);
+            particle.style.animation = 'flashIn 0.4s ease-out forwards';
+            
+            setTimeout(() => {
+                particle.style.animation = 'shrinkToButton 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards';
+            }, 400);
+        }, i * 150);
+    }
+
+    setTimeout(() => {
+        targetBtn.classList.add('classic-btn-glow');
+        setTimeout(() => {
+            overlay.remove();
+        }, 1000);
+    }, 1800);
+}
