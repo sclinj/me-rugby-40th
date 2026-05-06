@@ -82,18 +82,25 @@ h1, h2, h3 {
     will-change: transform, opacity; /* 強制啟動 GPU 加速 */
 }
 
-/* 手機版尺寸調整與效能優化 */
+/* 手機版：進一步精簡以提升流暢度 */
 @media (max-width: 768px) {
     .memory-particle {
-        width: 240px;
-        height: 180px;
-        margin-left: -120px;
-        margin-top: -90px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* 手機版使用極輕量陰影 */
+        width: 220px;
+        height: 165px;
+        margin-left: -110px;
+        margin-top: -85px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     .memory-caption {
-        font-size: 0.9rem;
-        padding: 10px;
+        font-size: 0.85rem;
+        padding: 8px;
+    }
+    /* 手機版簡化動畫路徑：減少運算量 */
+    @keyframes carouselIn {
+        0% { opacity: 0; transform: translateZ(-400px) rotateY(-45deg); }
+        30% { opacity: 1; transform: translateZ(100px) rotateY(0deg) scale(1.1); }
+        70% { opacity: 1; transform: translateZ(100px) rotateY(0deg) scale(1); }
+        100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.01); }
     }
 }
 

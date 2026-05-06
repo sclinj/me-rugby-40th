@@ -711,47 +711,47 @@ function initNostalgicFlash() {
         { url: 'assets/albums/album_7.jpg', caption: '1993年 vs 台大醫學' }
     ];
 
-    for (let i = 0; i < photos.length; i++) {
+    const isMobile = window.innerWidth <= 768;
+    const displayPhotos = isMobile ? photos.slice(0, 3) : photos; // 手機版只播前 3 張
+
+    for (let i = 0; i < displayPhotos.length; i++) {
         setTimeout(() => {
             const particle = document.createElement('div');
             particle.className = 'memory-particle';
-            particle.style.backgroundImage = `url(${photos[i].url})`;
+            particle.style.backgroundImage = `url(${displayPhotos[i].url})`;
             
-            // 增加文字說明
             const caption = document.createElement('div');
             caption.className = 'memory-caption';
-            caption.innerText = photos[i].caption;
+            caption.innerText = displayPhotos[i].caption;
             particle.appendChild(caption);
             
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
-            // 加上微調，確保對準按鈕中心
             const tx = (targetX - centerX);
             const ty = (targetY - centerY);
             
             particle.style.setProperty('--tx', `${tx}px`);
             particle.style.setProperty('--ty', `${ty}px`);
-            
             overlay.appendChild(particle);
 
-            // 執行 3D 旋轉與縮放動畫 (總長 2.8 秒)
             particle.style.animation = 'carouselIn 2.8s cubic-bezier(0.4, 0, 0.2, 1) forwards';
             
-            // 在照片飛抵按鈕的瞬間 (2.5秒處)，讓按鈕跳動
             setTimeout(() => {
                 targetBtn.classList.remove('btn-react');
-                void targetBtn.offsetWidth; // 強制重繪
+                void targetBtn.offsetWidth; 
                 targetBtn.classList.add('btn-react');
+                
+                // 修正：手動移除已完成的個體
+                setTimeout(() => particle.remove(), 500);
             }, 2500);
-
-        }, i * 2500); // 稍微加長間隔，讓大家看清文字
+        }, i * 2500);
     }
 
-    // 最後讓按鈕發光
     setTimeout(() => {
         targetBtn.classList.add('classic-btn-glow');
         setTimeout(() => {
+            overlay.innerHTML = ''; // 徹底清空
             overlay.remove();
         }, 1500);
-    }, photos.length * 2500 + 1000); 
+    }, displayPhotos.length * 2500 + 1000); 
 }
