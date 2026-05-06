@@ -65,7 +65,7 @@ h1, h2, h3 {
 
 .memory-particle {
     position: absolute;
-    width: 300px; /* 放大初始尺寸 */
+    width: 300px;
     height: 225px;
     left: 50%;
     top: 50%;
@@ -74,11 +74,27 @@ h1, h2, h3 {
     background-size: cover;
     background-position: center;
     border-radius: 12px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-    border: 3px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); /* 減輕陰影負擔 */
+    border: 2px solid rgba(255, 255, 255, 0.2);
     opacity: 0;
     z-index: 10000;
     transform-style: preserve-3d;
+    will-change: transform, opacity; /* 強制啟動 GPU 加速 */
+}
+
+/* 手機版尺寸調整與效能優化 */
+@media (max-width: 768px) {
+    .memory-particle {
+        width: 240px;
+        height: 180px;
+        margin-left: -120px;
+        margin-top: -90px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* 手機版使用極輕量陰影 */
+    }
+    .memory-caption {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
 }
 
 .memory-caption {
