@@ -95,8 +95,10 @@ h1, h2, h3 {
         will-change: transform, opacity;
     }
     .memory-caption {
-        font-size: 0.85rem;
-        padding: 8px;
+        font-size: 0.7rem; /* 調小字體 */
+        padding: 5px 8px;  /* 縮減間距 */
+        font-weight: 500;
+        letter-spacing: 0.5px;
     }
     /* 手機版專用：純 2D 漩渦吸入動畫 */
     @keyframes carouselIn {
