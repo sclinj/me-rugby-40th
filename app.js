@@ -723,18 +723,21 @@ function initNostalgicFlash() {
             particle.style.setProperty('--ty', `${ty}px`);
             
             overlay.appendChild(particle);
-            particle.style.animation = 'flashIn 0.4s ease-out forwards';
+
+            // 執行閃現 (變慢)
+            particle.style.animation = 'flashIn 0.8s ease-out forwards';
             
+            // 閃現完後縮向按鈕 (變慢)
             setTimeout(() => {
-                particle.style.animation = 'shrinkToButton 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards';
-            }, 400);
-        }, i * 150);
+                particle.style.animation = 'shrinkToButton 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards';
+            }, 1000);
+        }, i * 450); // 每 450ms 閃一張
     }
 
     setTimeout(() => {
         targetBtn.classList.add('classic-btn-glow');
         setTimeout(() => {
             overlay.remove();
-        }, 1000);
-    }, 1800);
+        }, 1500);
+    }, 4500);
 }
